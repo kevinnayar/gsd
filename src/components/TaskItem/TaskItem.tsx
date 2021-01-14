@@ -83,11 +83,6 @@ export function TaskItem(props: TaskItemProps) {
           onClick={handleToggleTaskCompletion}
         />
         <Icon
-          iconName="schedule"
-          className="move-task"
-          onClick={handleToggleTaskCompletion}
-        />
-        <Icon
           iconName="delete"
           className="delete-task"
           onClick={handleTaskDeletion}

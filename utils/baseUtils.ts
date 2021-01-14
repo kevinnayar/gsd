@@ -1,4 +1,5 @@
-import { ITaskItem } from '../types/baseTypes';
+import { ITaskItem, IThemeMode } from '../types/baseTypes';
+
 
 export function unixTimestampToDayDate(timestamp: number): string {
   return new Date(timestamp).toISOString().slice(0, 10);
@@ -49,4 +50,17 @@ export function sortTaskListAsc(taskList: ITaskItem[]): ITaskItem[] {
     if (a.position < b.position) return -1;
     return 0;
   });
+}
+
+const GSD_THEME_KEY = 'GSD_THEME_KEY';
+const DEFAULT_THEME_MODE: IThemeMode = 'light-mode';
+
+export function getLocalTheme(storage: Storage): IThemeMode {
+  return storage.getItem && storage.getItem(GSD_THEME_KEY) !== null && storage.getItem(GSD_THEME_KEY) !== 'null'
+    ? (storage.getItem(GSD_THEME_KEY) as IThemeMode)
+    : DEFAULT_THEME_MODE;
+}
+
+export function setLocalTheme(storage: Storage, themeMode: IThemeMode) {
+  if (storage.setItem) storage.setItem(GSD_THEME_KEY, themeMode);
 }

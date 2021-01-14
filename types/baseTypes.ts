@@ -7,3 +7,5 @@ export type ITaskItem = {
   dueDay: string;
   position: number;
 };
+
+export type IThemeMode = 'light-mode' | 'dark-mode';

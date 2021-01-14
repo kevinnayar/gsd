@@ -10,9 +10,14 @@ import {
   sortTaskListAsc,
   moveItemInList,
 } from '../../../utils/baseUtils';
-import { ITaskItem } from '../../../types/baseTypes';
+import { ITaskItem, IThemeMode } from '../../../types/baseTypes';
 
-export function Tasks(props: { taskList: ITaskItem[] }) {
+type TasksProps = {
+  taskList: ITaskItem[],
+  themeMode: IThemeMode,
+};
+
+export function Tasks(props: TasksProps) {
   const [taskList, setTaskList] = useState<ITaskItem[]>(props.taskList);
 
   const updateTaskItem = (taskItem: ITaskItem) => {
@@ -59,7 +64,7 @@ export function Tasks(props: { taskList: ITaskItem[] }) {
     <div className="tasks">
       <div className="tasks__header">
         <h1>Get shit done</h1>
-        <ThemeSwitch />
+        <ThemeSwitch themeMode={props.themeMode} />
       </div>
 
       <div className="tasks__column tasks__column--odd">

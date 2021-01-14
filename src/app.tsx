@@ -4,8 +4,8 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { Tasks } from './components/Tasks/Tasks';
-import { unixTimestampToDayDate, isMobileDevice } from '../utils/baseUtils';
-import { ITaskItem } from '../types/baseTypes';
+import { unixTimestampToDayDate, isMobileDevice, getLocalTheme, setLocalTheme } from '../utils/baseUtils';
+import { ITaskItem, IThemeMode } from '../types/baseTypes';
 
 function generateFakeTaskItems(taskNames: string[]): ITaskItem[] {
   const createdDate = Date.now();
@@ -25,6 +25,11 @@ function generateFakeTaskItems(taskNames: string[]): ITaskItem[] {
 }
 
 export default function App() {
+  const themeMode: IThemeMode = getLocalTheme(window.localStorage);
+  console.log(themeMode);
+  document.body.classList.add(themeMode);
+  setLocalTheme(window.localStorage, themeMode);
+
   const taskNames = ['Alter images', 'Bathe dog', 'Count backwards', 'Draw parallels', 'Eat noodles', 'Fight sleep'];
   const taskList = generateFakeTaskItems(taskNames);
   const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend;
@@ -32,7 +37,7 @@ export default function App() {
   return (
     <div className="app">
       <DndProvider backend={dndBackend}>
-        <Tasks taskList={taskList} />
+        <Tasks taskList={taskList} themeMode={themeMode} />
       </DndProvider>
     </div>
   );

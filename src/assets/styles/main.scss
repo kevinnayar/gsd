@@ -12,9 +12,10 @@ $gray-color-700: #4A5568;
 $gray-color-800: #2D3748;
 $gray-color-900: #1A202C;
 
-// $pop-color: #0971f1;
-$pop-color: #76aef5;
-// $pop-color-900: #37468c;
+
+$pop-color-100: #76aef5;
+// $pop-color-200: #0971f1;
+// $pop-color-300: #37468c;
 
 $mobile-width: 600px;
 
@@ -59,7 +60,7 @@ h1, h2, h3, h4, h5, h6 {
   box-sizing: border-box;
 }
 
-body.light {
+body.light-mode {
   background: $gray-color-100;
   color: $gray-color-600;
 
@@ -108,7 +109,7 @@ body.light {
   }
 }
 
-body.dark {
+body.dark-mode {
   background: $gray-color-900;
   color: $gray-color-500;
 
@@ -283,7 +284,7 @@ body.dark {
 
   &--active {
     height: 24px;
-    background: $pop-color;
+    background: $pop-color-100;
   }
 }
 
@@ -333,9 +334,9 @@ body.dark {
     }
   }
 
-  &--dark {
+  &--dark-mode {
     .theme-switch__slider {
-      background-color: $pop-color;
+      background-color: $pop-color-100;
 
       &:before {
         transform: translateX(24px);

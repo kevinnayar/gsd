@@ -37,19 +37,9 @@ export function moveItemInList<T>(listIn: T[], from: number, _to: number): T[] {
   return listOut;
 }
 
-export function updateTaskListPositionByIndex(taskList: ITaskItem[]): ITaskItem[] {
-  return taskList.map((item, index) => {
-    item.position = index;
-    return item;
-  });
-}
-
-export function sortTaskListAsc(taskList: ITaskItem[]): ITaskItem[] {
-  return taskList.sort((a, b) => {
-    if (a.position > b.position) return 1;
-    if (a.position < b.position) return -1;
-    return 0;
-  });
+export function insertAtIndex<T>(listIn: T[], itemIn: T, index: number): T[] {
+  const listOut: T[] = [...listIn.slice(0, index), itemIn, ...listIn.slice(index)];
+  return listOut;
 }
 
 const GSD_THEME_KEY = 'GSD_THEME_KEY';

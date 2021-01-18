@@ -1,21 +1,25 @@
 import * as React from 'react';
 import { TaskDropZone } from '../TaskDropZone/TaskDropZone';
 import { TaskItem } from '../TaskItem/TaskItem';
-import { ITaskItem } from '../../../types/baseTypes';
+import { ITaskMap, ITaskItem, ColumnId } from '../../../types/baseTypes';
 
 type TaskListProps = {
-  tasks: ITaskItem[]
+  taskMap: ITaskMap,
+  taskIds: string[],
+  columnId: ColumnId;
   title: string,
   noTasksMessage: string,
   icon?: any,
   updateTaskItem: (taskItem: ITaskItem) => void,
   deleteTaskItem: (taskItemId: string) => void,
-  moveTaskItem: (from: number, to: number) => void,
+  moveTaskItem: (taskItem: ITaskItem, to: number, columnId: ColumnId) => void,
 };
 
 export function TaskList(props: TaskListProps) {
   const {
-    tasks,
+    taskMap,
+    taskIds,
+    columnId,
     title,
     noTasksMessage,
     icon,
@@ -27,18 +31,34 @@ export function TaskList(props: TaskListProps) {
   return (
     <div className="column">
       <div className="column__title">
-        <h2>{title}</h2>{icon}
+        <h2>{title}</h2> {icon}
       </div>
       <div className="column__body">
         <div className="task-list task-list--incompleted">
-          {!tasks.length ? <p className="no-task-list-item">{noTasksMessage}</p> : null}
-          {tasks.map((task) => (
-            <div className="task-list__item" key={task.id}>
-              <TaskDropZone position={task.position} updatePosition={moveTaskItem} />
-              <TaskItem taskItem={task} updateTaskItem={updateTaskItem} deleteTaskItem={deleteTaskItem} />
-            </div>
-          ))}
-          {tasks.length ? <TaskDropZone position={tasks.length} updatePosition={moveTaskItem} />: null}
+          {!taskIds.length ? <p className="no-task-list-item">{noTasksMessage}</p> : null}
+          {taskIds.map((id, index) => {
+            const task = taskMap[id];
+            return (
+              <div className="task-list__item" key={task.id}>
+                <TaskDropZone
+                  position={index}
+                  columnId={columnId}
+                  updatePosition={moveTaskItem}
+                />
+                <TaskItem
+                  taskItem={task}
+                  taskIds={taskIds}
+                  updateTaskItem={updateTaskItem}
+                  deleteTaskItem={deleteTaskItem}
+                />
+              </div>
+            );
+          })}
+          <TaskDropZone
+            position={taskIds.length}
+            columnId={columnId}
+            updatePosition={moveTaskItem}
+          />
         </div>
       </div>
     </div>

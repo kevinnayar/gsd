@@ -5,12 +5,16 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { Tasks } from './components/Tasks/Tasks';
 import { unixTimestampToDayDate, isMobileDevice, getLocalTheme, setLocalTheme } from '../utils/baseUtils';
-import { ITaskItem, IThemeMode } from '../types/baseTypes';
+import { ITaskItem, ITaskMap, ITaskData, IThemeMode } from '../types/baseTypes';
 
-function generateFakeTaskItems(taskNames: string[]): ITaskItem[] {
+function generateTaskItems(taskNames: string[]): ITaskData {
+  const taskMap: ITaskMap = {};
+  const taskIds: string[] = [];
+
   const createdDate = Date.now();
   const dueDay = unixTimestampToDayDate(createdDate);
-  return taskNames.map((name, position) => {
+
+  for (const name of taskNames) {
     const task: ITaskItem = {
       id: uuid.v4(),
       name,
@@ -18,26 +22,35 @@ function generateFakeTaskItems(taskNames: string[]): ITaskItem[] {
       completed: false,
       createdDate,
       dueDay,
-      position,
     };
-    return task;
-  });
+    taskMap[task.id] = task;
+    taskIds.push(task.id);
+  };
+
+  return {
+    taskMap,
+    taskIds,
+  };
 }
 
 export default function App() {
   const themeMode: IThemeMode = getLocalTheme(window.localStorage);
-  console.log(themeMode);
   document.body.classList.add(themeMode);
   setLocalTheme(window.localStorage, themeMode);
 
-  const taskNames = ['Alter images', 'Bathe dog', 'Count backwards', 'Draw parallels', 'Eat noodles', 'Fight sleep'];
-  const taskList = generateFakeTaskItems(taskNames);
+  const incompleteTasks: ITaskData = generateTaskItems([]);
+  const completeTasks: ITaskData = generateTaskItems([]);
+
   const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend;
 
   return (
     <div className="app">
       <DndProvider backend={dndBackend}>
-        <Tasks taskList={taskList} themeMode={themeMode} />
+        <Tasks
+          completeTasks={completeTasks} 
+          incompleteTasks={incompleteTasks}
+          themeMode={themeMode}
+        />
       </DndProvider>
     </div>
   );

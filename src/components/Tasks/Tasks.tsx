@@ -4,72 +4,132 @@ import * as uuid from 'uuid';
 import { Icon } from '../Icon/Icon';
 import { TaskList } from '../TaskList/TaskList';
 import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
-import { 
-  unixTimestampToDayDate, 
-  updateTaskListPositionByIndex,
-  sortTaskListAsc,
-  moveItemInList,
-} from '../../../utils/baseUtils';
-import { ITaskItem, IThemeMode } from '../../../types/baseTypes';
+import { unixTimestampToDayDate, insertAtIndex, moveItemInList } from '../../../utils/baseUtils';
+import { ITaskData, ITaskMap, ITaskItem, IThemeMode, ColumnId } from '../../../types/baseTypes';
 
 type TasksProps = {
-  taskList: ITaskItem[],
+  completeTasks: ITaskData,
+  incompleteTasks: ITaskData,
   themeMode: IThemeMode,
 };
 
 export function Tasks(props: TasksProps) {
-  const [taskList, setTaskList] = useState<ITaskItem[]>(props.taskList);
+  const [incompleteTaskMap, setIncompleteTaskMap] = useState<ITaskMap>(props.incompleteTasks.taskMap);
+  const [incompleteTaskIds, setIncompleteTaskIds] = useState<string[]>(props.incompleteTasks.taskIds);
 
-  const updateTaskItem = (taskItem: ITaskItem) => {
-    const updatedList = taskList.map((item) => item.id === taskItem.id ? taskItem : item);
-    setTaskList(updatedList);
-  };
+  const [completeTaskMap, setCompleteTaskMap] = useState<ITaskMap>(props.completeTasks.taskMap);
+  const [completeTaskIds, setCompleteTaskIds] = useState<string[]>(props.completeTasks.taskIds);
 
   const addTaskItem = () => {
     const createdDate = Date.now();
-    const dueDay = unixTimestampToDayDate(createdDate);
-    const newItem: ITaskItem = {
+    const taskItem: ITaskItem = {
       id: uuid.v4(),
       name: 'Some more shit that I have to do',
       type: 'task',
       completed: false,
       createdDate,
-      dueDay,
-      position: 0,
+      dueDay: unixTimestampToDayDate(createdDate),
     };
-    const updatedList = taskList.map((item) => {
-      item.position = item.position + 1;
-      return item;
-    });
-    setTaskList([newItem, ...updatedList]);
+
+    setIncompleteTaskIds([ ...incompleteTaskIds, taskItem.id ]);
+    setIncompleteTaskMap({ ...incompleteTaskMap, [taskItem.id]: taskItem });
   };
 
-  const deleteTaskItem = (taskItemId: string) => {
-    const filteredList = taskList.filter((item) => item.id !== taskItemId);
-    const updatedList = updateTaskListPositionByIndex(filteredList);
-    setTaskList(updatedList);
+  const updateTaskItem = (taskItem: ITaskItem) => {
+    const { id } = taskItem;
+    const incompleted = incompleteTaskMap[id];
+    const completed = completeTaskMap[id];
+
+    if (incompleted) {
+      const beingCompleted = taskItem.completed;
+      if (beingCompleted) {
+        setIncompleteTaskIds(incompleteTaskIds.filter(_id => _id !== id));
+        const { [id]: omit, ..._incompleteTaskMap } = incompleteTaskMap;
+        setIncompleteTaskMap(_incompleteTaskMap);
+
+        setCompleteTaskIds([ id, ...completeTaskIds ]);
+        setCompleteTaskMap({ ...completeTaskMap, [id]: taskItem });
+      } else {
+        setIncompleteTaskMap({ ...incompleteTaskMap, [id]: taskItem });
+      }
+    }
+    if (completed) {
+      const beingIncompleted = !taskItem.completed;
+      if (beingIncompleted) {
+        setCompleteTaskIds(completeTaskIds.filter(_id => _id !== id));
+        const { [id]: omit, ..._completeTaskMap } = completeTaskMap;
+        setCompleteTaskMap(_completeTaskMap);
+
+        setIncompleteTaskIds([ id, ...incompleteTaskIds ]);
+        setIncompleteTaskMap({ ...incompleteTaskMap, [id]: taskItem });
+      } else {
+        setCompleteTaskMap({ ...completeTaskMap, [id]: taskItem });
+      }
+    }
   };
 
-  const moveTaskItem = (from: number, to: number) => {
-    const sortedList = sortTaskListAsc(taskList);
-    const arrangedList = moveItemInList(sortedList, from, to);
-    const updatedList = updateTaskListPositionByIndex(arrangedList);
-    setTaskList(updatedList);
+  const deleteTaskItem = (id: string) => {
+    const incompleted = incompleteTaskMap[id];
+    const completed = completeTaskMap[id];
+
+    if (incompleted) {
+      setIncompleteTaskIds(incompleteTaskIds.filter(_id => _id !== id));
+      const { [id]: omit, ..._incompleteTaskMap } = incompleteTaskMap;
+      setIncompleteTaskMap(_incompleteTaskMap);
+    }
+    if (completed) {
+      setCompleteTaskIds(completeTaskIds.filter(_id => _id !== id));
+      const { [id]: omit, ..._completeTaskMap } = completeTaskMap;
+      setCompleteTaskMap(_completeTaskMap);
+    }
   };
 
-  const incompleteTasks = sortTaskListAsc(taskList.filter((item) => item.completed === false));
-  const completeTasks = sortTaskListAsc(taskList.filter((item) => item.completed === true));
+  const moveTaskItem = (taskItem: ITaskItem, to: number, columnId: ColumnId) => {
+    const incompleted = incompleteTaskMap[taskItem.id];
+    const completed = completeTaskMap[taskItem.id];
+
+    if (incompleted && columnId === 'incomplete' || completed && columnId === 'complete') {
+      const [taskIds, setTaskIds] = incompleted
+        ? [incompleteTaskIds, setIncompleteTaskIds]
+        : [completeTaskIds, setCompleteTaskIds];
+      
+      const from = taskIds.findIndex(id => id === taskItem.id);
+      setTaskIds(moveItemInList(taskIds, from, to));
+    } else {
+      const item = {
+        ...taskItem,
+        completed: !taskItem.completed,
+      };
+      
+      const [fromTaskIds, setFromTaskIds, fromTaskMap, setFromTaskMap] = incompleted
+        ? [incompleteTaskIds, setIncompleteTaskIds, incompleteTaskMap, setIncompleteTaskMap]
+        : [completeTaskIds, setCompleteTaskIds, completeTaskMap, setCompleteTaskMap];
+
+      const [toTaskIds, setToTaskIds, toTaskMap, setToTaskMap] = incompleted
+        ? [completeTaskIds, setCompleteTaskIds, completeTaskMap, setCompleteTaskMap]
+        : [incompleteTaskIds, setIncompleteTaskIds, incompleteTaskMap, setIncompleteTaskMap];
+
+      setFromTaskIds(fromTaskIds.filter(id => id !== item.id));
+      const { [item.id]: omit, ..._fromTaskMap } = fromTaskMap;
+      setFromTaskMap(_fromTaskMap);
+
+      setToTaskMap({ ...toTaskMap, [item.id]: item });
+      setToTaskIds(insertAtIndex(toTaskIds, item.id, to));
+    }
+  };
 
   return (
     <div className="tasks">
       <div className="tasks__header">
-        <h1>Get shit done</h1>
+        <h1>Get Shit Done</h1>
         <ThemeSwitch themeMode={props.themeMode} />
       </div>
 
-      <div className="tasks__column tasks__column--odd">
+      <div className="tasks__column">
         <TaskList
-          tasks={incompleteTasks}
+          taskMap={incompleteTaskMap}
+          taskIds={incompleteTaskIds}
+          columnId="incomplete"
           title="Shit I need to do."
           noTasksMessage="I ain't got shit to do."
           icon={<Icon iconName="add" className="create-task" onClick={addTaskItem} />}
@@ -79,9 +139,11 @@ export function Tasks(props: TasksProps) {
         />
       </div>
 
-      <div className="tasks__column tasks__column--even">
+      <div className="tasks__column">
         <TaskList
-          tasks={completeTasks}
+          taskMap={completeTaskMap}
+          taskIds={completeTaskIds}
+          columnId="complete"
           title="Shit I've already done."
           noTasksMessage="I really haven't done shit."
           updateTaskItem={updateTaskItem}

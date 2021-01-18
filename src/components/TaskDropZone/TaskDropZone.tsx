@@ -4,11 +4,12 @@ import {
   DropTargetMonitor,
   DragObjectWithType
 } from 'react-dnd';
-import { ITaskItem } from '../../../types/baseTypes';
+import { ITaskItem, ColumnId } from '../../../types/baseTypes';
 
 type TaskDropZoneProps = {
   position: number;
-  updatePosition: (from: number, to: number) => void;
+  columnId: ColumnId;
+  updatePosition: (taskItem: ITaskItem, position: number, columnId: ColumnId) => void;
 };
 
 export function TaskDropZone(props: TaskDropZoneProps) {
@@ -16,8 +17,8 @@ export function TaskDropZone(props: TaskDropZoneProps) {
     accept: 'task',
     drop: (item: DragObjectWithType) => {
       if (item.type === 'task') {
-        const movedItem = { ...item } as ITaskItem;
-        props.updatePosition(movedItem.position, props.position);
+        const movingItem = { ...item } as ITaskItem;
+        props.updatePosition(movingItem, props.position, props.columnId);
       }
     },
     collect: (monitor: DropTargetMonitor) => ({

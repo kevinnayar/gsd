@@ -52,7 +52,7 @@ body {
   transition: all 0.5s $cubic-bezier;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1 {
   font-family: $font-mono;
 }
 
@@ -106,6 +106,15 @@ body.light-mode {
         color: $gray-color-500;
       }
     }
+
+    &--focused {
+      border: 1px solid $gray-color-500;
+      border-radius: 4px;
+
+      .task-item__name {
+        background: $gray-color-200;
+      }
+    }
   }
 }
 
@@ -156,6 +165,15 @@ body.dark-mode {
         color: $gray-color-600;
       }
     }
+
+    &--focused {
+      border: 1px solid $gray-color-600;
+      border-radius: 4px;
+
+      .task-item__name {
+        background: $gray-color-800;
+      }
+    }
   }
 }
 
@@ -164,6 +182,7 @@ body.dark-mode {
   display: flex;
   flex-wrap: wrap;
   padding: 0;
+  justify-content: center;
 
   &__header {
     flex-basis: 100%;
@@ -177,24 +196,12 @@ body.dark-mode {
   &__column {
     flex-basis: 44%;
     width: 44%;
-    margin: 0 4%;
+    margin: 0 2%;
+
     @media only screen and (max-width: $mobile-width) {
       flex-basis: 90%;
       width: 90%;
-    }
-
-    &--odd {
-      margin-right: 2%;
-      @media only screen and (max-width: $mobile-width) {
-        margin: 3% 5%;
-      }
-    }
-
-    &--even {
-      margin-left: 2%;
-      @media only screen and (max-width: $mobile-width) {
-        margin: 3% 5%;
-      }
+      margin: 3% 5%;
     }
   }
 }
@@ -233,8 +240,8 @@ body.dark-mode {
   margin-bottom: 8px;
   display: flex;
   align-items: center;
+  border: 1px solid transparent;
   border-radius: 4px;
-  
 
   &__actions {
     display: flex;
@@ -243,9 +250,9 @@ body.dark-mode {
 
   &__name {
     width: 100%;
-    height: 50px;
-    margin: 0;
-    padding: 0;
+    height: 40px;
+    margin: 0 6px 0 0;
+    padding: 4px 8px;
     border: none;
     outline: none;
     font-size: 1em;
@@ -270,7 +277,7 @@ body.dark-mode {
   
   &--drag-task {
     cursor: move;
-    margin-right: 1.5em;
+    margin: 0 1.5em 0 0.25em;
     
     @media only screen and (max-width: $mobile-width) {
       margin-right: .5em;
@@ -280,10 +287,11 @@ body.dark-mode {
 
 .task-dropzone {
   height: 8px;
+  border-radius: 4px;
   transition: $hover-transition;
 
   &--active {
-    height: 24px;
+    height: 48px;
     background: $pop-color-100;
   }
 }

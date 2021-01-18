@@ -5,7 +5,15 @@ export type ITaskItem = {
   completed: boolean;
   createdDate: number;
   dueDay: string;
-  position: number;
+};
+
+export type ITaskMap = { [id: string]: ITaskItem };
+
+export type ITaskData = {
+  taskMap: ITaskMap;
+  taskIds: string[];
 };
 
 export type IThemeMode = 'light-mode' | 'dark-mode';
+
+export type ColumnId = 'incomplete' | 'complete';

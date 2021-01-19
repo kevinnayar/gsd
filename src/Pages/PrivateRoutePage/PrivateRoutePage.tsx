@@ -10,8 +10,8 @@ type PrivateRouteProps = {
 };
 
 export function PrivateRoutePage(props: PrivateRouteProps) {
-  const userMaybe = useContext(UserAuthContext);
-  return (userMaybe) 
+  const [userAuthContext] = useContext(UserAuthContext);
+  return (userAuthContext.userDef) 
     ? <>{props.children}</>
     : <Redirect from={props.from} to={props.to} />;
 }

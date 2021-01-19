@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as uuid from 'uuid';
-import { createContext } from 'react';
-import { Router, Redirect, Route } from 'react-router';
+import { createContext, useState } from 'react';
+import { Router, Route } from 'react-router';
 import { createBrowserHistory } from 'history';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -15,6 +15,7 @@ import { Signup } from './components/Signup/Signup';
 import { Header } from './components/Header/Header';
 
 import firebase from '../config/firebase';
+import { getLoggedInUser } from '../utils/authUtils';
 import {
   unixTimestampToDayDate,
   isMobileDevice,
@@ -48,15 +49,23 @@ function generateTaskItems(taskNames: string[]): ITaskData {
   };
 }
 
-const userAuthContext: IUserAuthContext = {
-  userDef: undefined,
-  db: firebase.firestore(),
-  auth: firebase.auth(),
-};
+type UserAuthContextGetAndSet = [
+  IUserAuthContext,
+  React.Dispatch<React.SetStateAction<IUserAuthContext>>,
+];
 
-export const UserAuthContext = createContext<IUserAuthContext>(userAuthContext);
+export const UserAuthContext = createContext<null | UserAuthContextGetAndSet>(null);
 
+const userMaybe = getLoggedInUser();
+console.log({userMaybe});
 export default function App() {
+  const userAuthContext: IUserAuthContext = {
+    userDef: undefined,
+    db: firebase.firestore(),
+    auth: firebase.auth(),
+  };
+  const [context, setContext] = useState(userAuthContext);
+
   const history = createBrowserHistory();
   const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend;
   const themeMode = initThemeMode(window.localStorage);
@@ -66,17 +75,17 @@ export default function App() {
 
   return (
     <div className="app">
-      <UserAuthContext.Provider value={userAuthContext}>
+      <UserAuthContext.Provider value={[context, setContext]}>
         <Router history={history}>
           <Header title="Get Shit Done" themeMode={themeMode} />
           <ErrorBoundaryPage>
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Signup} />
-            {/* <PrivateRoutePage from="/tasks" to="/">
+            <PrivateRoutePage from="/tasks" to="/login">
               <DndProvider backend={dndBackend}>
                 <TasksPage completeTasks={completeTasks} incompleteTasks={incompleteTasks} />
               </DndProvider>
-            </PrivateRoutePage> */}
+            </PrivateRoutePage>
           </ErrorBoundaryPage>
         </Router>
       </UserAuthContext.Provider>

@@ -211,6 +211,10 @@ body.dark-mode {
     margin: 1% 4% 2%;
   }
 
+  &__body {
+    width: 100%;
+  }
+
   a {
     color: $pop-color-200;
     text-decoration: none;
@@ -236,6 +240,10 @@ body.dark-mode {
 
     p {
       font-size: 0.9em;
+
+      span {
+        margin-left: 0.5em;
+      }
     }
 
     &:hover {
@@ -304,6 +312,10 @@ body.dark-mode {
     color: red;
     text-align: center;
   }
+}
+
+.tasks {
+  display: flex;
 }
 
 .column {

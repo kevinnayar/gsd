@@ -3,7 +3,7 @@ import * as React from 'react';
 type IconProps = {
   iconName: string;
   className: string;
-  onClick: (...args: any[]) => void;
+  onClick?: (...args: any[]) => void;
 };
 
 export function Icon(props: IconProps) {

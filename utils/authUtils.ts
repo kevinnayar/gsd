@@ -42,23 +42,34 @@ import {
 //   return result;
 // }
 
-// async function handleGetUserAsync(userId: string): Promise<void | firebase.firestore.DocumentData> {
-//   const userRef: firebase.firestore.DocumentReference<firebase.firestore.DocumentData> = firebase
-//     .firestore()
-//     .collection('users')
-//     .doc(userId);
+export function getLoggedInUser() {
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) return user;
+  });
 
-//   const userDoc: void | firebase.firestore.DocumentData = await userRef
-//     .get()
-//     .then((userSnapshot: firebase.firestore.DocumentSnapshot) => {
-//       if (userSnapshot.exists) {
-//         return userSnapshot.data();
-//       } else {
-//         throw new Error('Could not get user data.');
-//       }
-//     });
-//   return userDoc;
-// }
+  const { currentUser } = firebase.auth();
+  if (currentUser) return currentUser;
+
+  return null;
+}
+
+export async function getUserDefById(userId: string): Promise<void | firebase.firestore.DocumentData> {
+  const userRef: firebase.firestore.DocumentReference<firebase.firestore.DocumentData> = firebase
+    .firestore()
+    .collection('users')
+    .doc(userId);
+
+  const userDef: void | firebase.firestore.DocumentData = await userRef
+    .get()
+    .then((userSnapshot: firebase.firestore.DocumentSnapshot) => {
+      if (userSnapshot.exists) {
+        return userSnapshot.data();
+      } else {
+        throw new Error('Could not get user data.');
+      }
+    });
+  return userDef;
+}
 
 export async function signup(
   auth: firebase.auth.Auth,

@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
+import { Redirect } from 'react-router';
 import { UserAuthContext } from '../../app';
 import { errorObjectToString } from '../../../utils/baseUtils';
 import { signup } from '../../../utils/authUtils';
 import { InternalUserDef } from '../../../types/baseTypes';
 
 export function Signup() {
-  const userAuthContext = useContext(UserAuthContext);
+  const [userAuthContext, setUserAuthContext] = useContext(UserAuthContext);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -51,7 +52,7 @@ export function Signup() {
     try {
       if (displayName && email && password) {
         setError(null);
-        const userDef: InternalUserDef = {
+        const user: InternalUserDef = {
           email,
           password,
           displayName,
@@ -59,13 +60,16 @@ export function Signup() {
           lastName,
           roleType: 'basic',
         };
-        await signup(userAuthContext.auth, userAuthContext.db, userDef);
+        const userDef = await signup(userAuthContext.auth, userAuthContext.db, user);
+        setUserAuthContext({ ...userAuthContext, userDef });
       }
     } catch (e) {
       setError(errorObjectToString(e));
     }
   }
 
+  if (userAuthContext.userDef) return <Redirect to="/tasks" />;
+  
   return (
     <div className="auth-form auth-form--signup">
       <h2>Signup</h2>

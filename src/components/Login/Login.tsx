@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
+import { Redirect } from 'react-router';
 import { UserAuthContext } from '../../app';
 import { errorObjectToString } from '../../../utils/baseUtils';
-import { login } from '../../../utils/authUtils';
-import { InternalUserCredentials } from '../../../types/baseTypes';
+import { login, getUserDefById } from '../../../utils/authUtils';
+import { InternalUserCredentials, UserDefHydrated } from '../../../types/baseTypes';
 
 
 export function Login() {
-  const userAuthContext = useContext(UserAuthContext);
+  const [userAuthContext, setUserAuthContext] = useContext(UserAuthContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,19 +34,22 @@ export function Login() {
 
   const handleLogin = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    console.log(evt);
 
     try {
       if (email && password) {
         setError(null);
         const credentials: InternalUserCredentials = { email, password };
         const user = await login(userAuthContext.auth, credentials);
+        const userDef = await getUserDefById(user.uid) as UserDefHydrated;
+        setUserAuthContext({ ...userAuthContext, userDef });
       }
     } catch (e) {
       setError(errorObjectToString(e));
     }
   }
 
+  if (userAuthContext.userDef) return <Redirect to="/tasks" />;
+  
   return (
     <div className="auth-form auth-form--login">
       <h2>Login</h2>

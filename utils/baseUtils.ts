@@ -1,5 +1,8 @@
-import { ITaskItem, IThemeMode } from '../types/baseTypes';
+import { IThemeMode } from '../types/baseTypes';
 
+export function errorObjectToString(error: Error, fallback?: string): string {
+  return error.message || fallback || 'There was an error. Please try again later.';
+}
 
 export function unixTimestampToDayDate(timestamp: number): string {
   return new Date(timestamp).toISOString().slice(0, 10);
@@ -43,6 +46,7 @@ export function insertAtIndex<T>(listIn: T[], itemIn: T, index: number): T[] {
 }
 
 const GSD_THEME_KEY = 'GSD_THEME_KEY';
+
 const DEFAULT_THEME_MODE: IThemeMode = 'light-mode';
 
 export function getLocalTheme(storage: Storage): IThemeMode {
@@ -54,3 +58,11 @@ export function getLocalTheme(storage: Storage): IThemeMode {
 export function setLocalTheme(storage: Storage, themeMode: IThemeMode) {
   if (storage.setItem) storage.setItem(GSD_THEME_KEY, themeMode);
 }
+
+export function initThemeMode(storage: Storage): IThemeMode {
+  const themeMode: IThemeMode = getLocalTheme(storage);
+  document.body.classList.add(themeMode);
+  setLocalTheme(storage, themeMode);
+  return themeMode;
+}
+

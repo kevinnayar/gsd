@@ -1,24 +1,24 @@
 import * as React from 'react';
 import { useState } from 'react';
 import * as uuid from 'uuid';
-import { Icon } from '../Icon/Icon';
-import { TaskList } from '../TaskList/TaskList';
-import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
+import { Icon } from '../../components/Icon/Icon';
+import { TaskList } from '../../components/TaskList/TaskList';
 import { unixTimestampToDayDate, insertAtIndex, moveItemInList } from '../../../utils/baseUtils';
 import { ITaskData, ITaskMap, ITaskItem, IThemeMode, ColumnId } from '../../../types/baseTypes';
 
 type TasksProps = {
   completeTasks: ITaskData,
   incompleteTasks: ITaskData,
-  themeMode: IThemeMode,
 };
 
-export function Tasks(props: TasksProps) {
+export function TasksPage(props: TasksProps) {
   const [incompleteTaskMap, setIncompleteTaskMap] = useState<ITaskMap>(props.incompleteTasks.taskMap);
   const [incompleteTaskIds, setIncompleteTaskIds] = useState<string[]>(props.incompleteTasks.taskIds);
 
   const [completeTaskMap, setCompleteTaskMap] = useState<ITaskMap>(props.completeTasks.taskMap);
   const [completeTaskIds, setCompleteTaskIds] = useState<string[]>(props.completeTasks.taskIds);
+
+  const [showCompleted, setShowCompleted] = useState(true);
 
   const addTaskItem = () => {
     const createdDate = Date.now();
@@ -118,39 +118,37 @@ export function Tasks(props: TasksProps) {
     }
   };
 
+  const hideCompletedTasks = () => {
+    setShowCompleted(false);
+  }
+
   return (
     <div className="tasks">
-      <div className="tasks__header">
-        <h1>Get Shit Done</h1>
-        <ThemeSwitch themeMode={props.themeMode} />
-      </div>
+      <TaskList
+        taskMap={incompleteTaskMap}
+        taskIds={incompleteTaskIds}
+        columnId="incomplete"
+        title="Shit I need to do."
+        noTasksMessage="I ain't got shit to do."
+        icon={<Icon iconName="add" className="create-task" onClick={addTaskItem} />}
+        updateTaskItem={updateTaskItem}
+        deleteTaskItem={deleteTaskItem}
+        moveTaskItem={moveTaskItem}
+      />
 
-      <div className="tasks__column">
-        <TaskList
-          taskMap={incompleteTaskMap}
-          taskIds={incompleteTaskIds}
-          columnId="incomplete"
-          title="Shit I need to do."
-          noTasksMessage="I ain't got shit to do."
-          icon={<Icon iconName="add" className="create-task" onClick={addTaskItem} />}
-          updateTaskItem={updateTaskItem}
-          deleteTaskItem={deleteTaskItem}
-          moveTaskItem={moveTaskItem}
-        />
-      </div>
-
-      <div className="tasks__column">
+      {showCompleted && (
         <TaskList
           taskMap={completeTaskMap}
           taskIds={completeTaskIds}
           columnId="complete"
           title="Shit I've already done."
           noTasksMessage="I really haven't done shit."
+          icon={<Icon iconName="visibility_off" className="hide-list" onClick={hideCompletedTasks} />}
           updateTaskItem={updateTaskItem}
           deleteTaskItem={deleteTaskItem}
           moveTaskItem={moveTaskItem}
         />
-        </div>
+      )}
     </div>
   );
 }

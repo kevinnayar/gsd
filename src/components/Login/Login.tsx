@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
 import { Redirect } from 'react-router';
-import { UserAuthContext } from '../../app';
+import UserAuthContext from '../../context/userAuthContext';
 import { errorObjectToString } from '../../../utils/baseUtils';
-import { login, getUserDefById } from '../../../utils/authUtils';
+import { login, getUserDef } from '../../../utils/authUtils';
 import { InternalUserCredentials, UserDefHydrated } from '../../../types/baseTypes';
 
 
 export function Login() {
-  const [userAuthContext, setUserAuthContext] = useContext(UserAuthContext);
+  const [userAuth, setUserAuth] = useContext(UserAuthContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,16 +39,16 @@ export function Login() {
       if (email && password) {
         setError(null);
         const credentials: InternalUserCredentials = { email, password };
-        const user = await login(userAuthContext.auth, credentials);
-        const userDef = await getUserDefById(user.uid) as UserDefHydrated;
-        setUserAuthContext({ ...userAuthContext, userDef });
+        const user = await login(userAuth.auth, credentials);
+        const userDef = await getUserDef(userAuth.db, user.uid) as UserDefHydrated;
+        setUserAuth({ ...userAuth, userDef });
       }
     } catch (e) {
       setError(errorObjectToString(e));
     }
   }
 
-  if (userAuthContext.userDef) return <Redirect to="/tasks" />;
+  if (userAuth.userDef) return <Redirect to="/tasks" />;
   
   return (
     <div className="auth-form auth-form--login">

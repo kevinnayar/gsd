@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useContext } from 'react';
-import { UserAuthContext } from '../../app';
+import UserAuthContext from '../../context/userAuthContext';
 import { Redirect } from 'react-router';
 
 type PrivateRouteProps = {
@@ -10,8 +10,8 @@ type PrivateRouteProps = {
 };
 
 export function PrivateRoutePage(props: PrivateRouteProps) {
-  const [userAuthContext] = useContext(UserAuthContext);
-  return (userAuthContext.userDef) 
+  const [userAuth] = useContext(UserAuthContext);
+  return (userAuth.userDef)
     ? <>{props.children}</>
     : <Redirect from={props.from} to={props.to} />;
 }

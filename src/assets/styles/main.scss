@@ -212,7 +212,8 @@ body.dark-mode {
   }
 
   &__body {
-    width: 100%;
+    width: 92%;
+    margin: 0 4% 2%;
   }
 
   a {
@@ -316,11 +317,15 @@ body.dark-mode {
 
 .tasks {
   display: flex;
+  justify-content: space-between;
+
+  @media only screen and (max-width: $mobile-width) {
+    flex-wrap: wrap;
+  }
 }
 
 .column {
-  width: 44%;
-  margin: 0 2%;
+  width: 48%;
 
   @media only screen and (max-width: $mobile-width) {
     flex-basis: 90%;

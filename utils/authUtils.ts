@@ -5,57 +5,11 @@ import {
   UserDefHydrated,
 } from '../types/baseTypes';
 
-// async function handleSignUpAsync(newUser: InternalUserDef): Promise<firebase.auth.UserCredential> {
-//   const { email, password, firstName, lastName, displayName, roleType } = newUser;
-
-//   const credential: firebase.auth.UserCredential = await firebase
-//     .auth()
-//     .createUserWithEmailAndPassword(email, password)
-//     .then(async (userCredential: firebase.auth.UserCredential) => {
-//       const userId: string = userCredential.user ? userCredential.user.uid : `USER_UID_ERROR_${new Date().getTime()}`;
-//       const createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-//       const userDef: UserDefHydrated = {
-//         firstName,
-//         lastName,
-//         displayName,
-//         email: email.toLowerCase(),
-//         userId,
-//         roleType,
-//         createdAt,
-//       };
-
-//       await firebase.firestore().collection('users').doc(userId).set(userDef);
-//       return userCredential;
-//     });
-//   return credential;
-// }
-
-// async function handleLogInAsync(userCredentials: InternalUserCredentials): Promise<firebase.auth.UserCredential> {
-//   const result: firebase.auth.UserCredential = await firebase
-//     .auth()
-//     .signInWithEmailAndPassword(userCredentials.email, userCredentials.password);
-//   return result;
-// }
-
-// async function handleLogOutAsync(): Promise<void> {
-//   const result: void = await firebase.auth().signOut();
-//   return result;
-// }
-
-export function getLoggedInUser() {
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) return user;
-  });
-
-  const { currentUser } = firebase.auth();
-  if (currentUser) return currentUser;
-
-  return null;
-}
-
-export async function getUserDefById(userId: string): Promise<void | firebase.firestore.DocumentData> {
-  const userRef: firebase.firestore.DocumentReference<firebase.firestore.DocumentData> = firebase
-    .firestore()
+export async function getUserDef(
+  db: firebase.firestore.Firestore,
+  userId: string
+): Promise<void | firebase.firestore.DocumentData> {
+  const userRef: firebase.firestore.DocumentReference<firebase.firestore.DocumentData> = db
     .collection('users')
     .doc(userId);
 

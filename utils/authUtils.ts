@@ -1,28 +1,15 @@
 import firebase from '../config/firebase';
-import {
-  InternalUserCredentials,
-  InternalUserDef,
-  UserDefHydrated,
-} from '../types/baseTypes';
+import { InternalUserCredentials, InternalUserDef, UserDefHydrated } from '../types/baseTypes';
 
 export async function getUserDef(
   db: firebase.firestore.Firestore,
   userId: string
-): Promise<void | firebase.firestore.DocumentData> {
-  const userRef: firebase.firestore.DocumentReference<firebase.firestore.DocumentData> = db
-    .collection('users')
-    .doc(userId);
-
-  const userDef: void | firebase.firestore.DocumentData = await userRef
-    .get()
-    .then((userSnapshot: firebase.firestore.DocumentSnapshot) => {
-      if (userSnapshot.exists) {
-        return userSnapshot.data();
-      } else {
-        throw new Error('Could not get user data.');
-      }
-    });
-  return userDef;
+): Promise<void | UserDefHydrated> {
+  const userRef = db.collection('users').doc(userId);
+  const userDef = await userRef.get().then((userSnapshot) => {
+    if (userSnapshot.exists) return userSnapshot.data();
+  });
+  return userDef as void | UserDefHydrated;
 }
 
 export async function signup(

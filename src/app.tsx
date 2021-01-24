@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import * as uuid from 'uuid';
 import { Router, Route, Redirect} from 'react-router';
 import { createBrowserHistory } from 'history';
 import { DndProvider } from 'react-dnd';
@@ -8,52 +7,28 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 
 import UserAuthContext, { initUserAuth } from './context/userAuthContext';
+import UserTasksContext, { initUserTasks } from './context/userTasksContext';
+
 import { ErrorBoundaryPage } from './pages/ErrorBoundaryPage/ErrorBoundaryPage';
 import { PrivateRoutePage } from './pages/PrivateRoutePage/PrivateRoutePage';
 import { TasksPage } from './pages/TasksPage/TasksPage';
+
+import { Header } from './components/Header/Header';
 import { Login } from './components/Login/Login';
 import { Signup } from './components/Signup/Signup';
-import { Header } from './components/Header/Header';
 
 import { getUserDef } from '../utils/authUtils';
-import {
-  unixTimestampToDayDate,
-  isMobileDevice,
-  initThemeMode,
-} from '../utils/baseUtils';
-import { ITaskItem, ITaskMap, ITaskData } from '../types/baseTypes';
-
-function generateTaskItems(taskNames: string[]): ITaskData {
-  const taskMap: ITaskMap = {};
-  const taskIds: string[] = [];
-
-  const createdDate = Date.now();
-  const dueDay = unixTimestampToDayDate(createdDate);
-
-  for (const name of taskNames) {
-    const task: ITaskItem = {
-      id: uuid.v4(),
-      name,
-      type: 'task',
-      completed: false,
-      createdDate,
-      dueDay,
-    };
-    taskMap[task.id] = task;
-    taskIds.push(task.id);
-  };
-
-  return {
-    taskMap,
-    taskIds,
-  };
-}
+import { getUserTasks } from '../utils/taskUtils';
+import { isMobileDevice, initThemeMode } from '../utils/baseUtils';
 
 const history = createBrowserHistory();
 
 export default function App() {
   const userAuthHook = useState(initUserAuth);
   const [userAuth, setUserAuth] = userAuthHook;
+
+  const userTasksHook = useState(initUserTasks);
+  const [, setUserTasks] = userTasksHook;
 
   useEffect(() => {
     userAuth.auth.onAuthStateChanged(async (user) => {
@@ -63,31 +38,18 @@ export default function App() {
           (userAuth.userDef && userAuth.userDef.userId !== user.uid)
         )
       ) {
-        const def = await getUserDef(userAuth.db, user.uid);
-        if (def) {
-          const { email, displayName, uid: userId } = user;
-          const { firstName, lastName, roleType, createdAt } = def;
-          const userDef = {
-            email,
-            firstName,
-            lastName,
-            displayName,
-            roleType,
-            createdAt,
-            userId,
-          };
+        const userDef = await getUserDef(userAuth.db, user.uid);
+        if (userDef) {
           setUserAuth({ ...userAuth, userDef });
+          const userTasks = await getUserTasks(userAuth.db, userDef.userId);
+          setUserTasks(userTasks);
         }
       }
     });
   });
 
-  
   const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend;
   const themeMode = initThemeMode(window.localStorage);
-
-  const incompleteTasks: ITaskData = generateTaskItems([]);
-  const completeTasks: ITaskData = generateTaskItems([]);  
 
   const routes = (
     <ErrorBoundaryPage>
@@ -96,7 +58,7 @@ export default function App() {
       <Route exact path="/signup" component={Signup} />
       <PrivateRoutePage from="/tasks" to="/login">
         <DndProvider backend={dndBackend}>
-          <TasksPage completeTasks={completeTasks} incompleteTasks={incompleteTasks} />
+          <TasksPage />
         </DndProvider>
       </PrivateRoutePage>
     </ErrorBoundaryPage>
@@ -105,10 +67,12 @@ export default function App() {
   return (
     <div className="app">
       <UserAuthContext.Provider value={userAuthHook}>
-        <Router history={history}>
-          <Header title="Get Shit Done" themeMode={themeMode} />
-          {routes}
-        </Router>
+        <UserTasksContext.Provider value={userTasksHook}>
+          <Router history={history}>
+            <Header title="Get Shit Done" themeMode={themeMode} />
+            {routes}
+          </Router>
+        </UserTasksContext.Provider>
       </UserAuthContext.Provider>
     </div>
   );

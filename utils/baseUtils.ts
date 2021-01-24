@@ -4,10 +4,6 @@ export function errorObjectToString(error: Error, fallback?: string): string {
   return error.message || fallback || 'There was an error. Please try again later.';
 }
 
-export function unixTimestampToDayDate(timestamp: number): string {
-  return new Date(timestamp).toISOString().slice(0, 10);
-}
-
 export function isMobileDevice(): boolean {
   const ver = window.navigator.appVersion;
   if (!ver) return false;

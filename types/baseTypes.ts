@@ -28,13 +28,17 @@ export type IUserAuthContext = {
   auth: firebase.auth.Auth;
 };
 
+export type IThemeMode = 'light-mode' | 'dark-mode';
+
+export type ColumnId = 'incomplete' | 'complete';
+
 export type ITaskItem = {
-  id: string;
+  taskId: string;
+  userId: string;
   name: string;
   type: 'task';
   completed: boolean;
   createdDate: number;
-  dueDay: string;
 };
 
 export type ITaskMap = { [id: string]: ITaskItem };
@@ -44,6 +48,11 @@ export type ITaskData = {
   taskIds: string[];
 };
 
-export type IThemeMode = 'light-mode' | 'dark-mode';
+export type IUserTasksContext = void | {
+  completeTasks: ITaskData;
+  incompleteTasks: ITaskData;
+};
 
-export type ColumnId = 'incomplete' | 'complete';
+
+
+

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { createContext } from 'react';
 import { db, auth } from '../../config/firebase';
 import { IUserAuthContext } from '../../types/baseTypes';
 
@@ -8,7 +8,7 @@ export const initUserAuth: IUserAuthContext = {
   auth,
 };
 
-export default React.createContext<[IUserAuthContext, React.Dispatch<React.SetStateAction<IUserAuthContext>>]>([
+export default createContext<[IUserAuthContext, React.Dispatch<React.SetStateAction<IUserAuthContext>>]>([
   initUserAuth,
   () => {},
 ]);

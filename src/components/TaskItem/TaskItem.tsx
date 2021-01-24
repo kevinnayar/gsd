@@ -53,7 +53,7 @@ export function TaskItem(props: TaskItemProps) {
 
   const handleOnDeleteTask = (e: any) => {
     e.preventDefault();
-    props.deleteTaskItem(props.taskItem.id);
+    props.deleteTaskItem(props.taskItem.taskId);
   };
 
   const completedClass = props.taskItem.completed ? 'complete' : 'incomplete';

@@ -1,99 +1,106 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import * as uuid from 'uuid';
+import { Redirect} from 'react-router';
+
+import UserAuthContext from '../../context/userAuthContext';
+import UserTasksContext from '../../context/userTasksContext';
+
 import { Icon } from '../../components/Icon/Icon';
 import { TaskList } from '../../components/TaskList/TaskList';
-import { unixTimestampToDayDate, insertAtIndex, moveItemInList } from '../../../utils/baseUtils';
-import { ITaskData, ITaskMap, ITaskItem, IThemeMode, ColumnId } from '../../../types/baseTypes';
+import { insertAtIndex, moveItemInList } from '../../../utils/baseUtils';
+import { ITaskMap, ITaskItem, ColumnId } from '../../../types/baseTypes';
 
-type TasksProps = {
-  completeTasks: ITaskData,
-  incompleteTasks: ITaskData,
-};
+export function TasksPage() {
+  const [userAuth, setUserAuth] = useContext(UserAuthContext);
+  const [userTasks, setUserTasks] = useContext(UserTasksContext);
 
-export function TasksPage(props: TasksProps) {
-  const [incompleteTaskMap, setIncompleteTaskMap] = useState<ITaskMap>(props.incompleteTasks.taskMap);
-  const [incompleteTaskIds, setIncompleteTaskIds] = useState<string[]>(props.incompleteTasks.taskIds);
+  if (!userAuth.userDef) return <Redirect to="/login" />;
+  const { userDef } = userAuth;
 
-  const [completeTaskMap, setCompleteTaskMap] = useState<ITaskMap>(props.completeTasks.taskMap);
-  const [completeTaskIds, setCompleteTaskIds] = useState<string[]>(props.completeTasks.taskIds);
+  if (!userTasks) return <div>loading...</div>;
+  const { incompleteTasks, completeTasks } = userTasks;
 
-  const [showCompleted, setShowCompleted] = useState(true);
+  const [incompleteTaskMap, setIncompleteTaskMap] = useState<ITaskMap>(incompleteTasks.taskMap);
+  const [incompleteTaskIds, setIncompleteTaskIds] = useState<string[]>(incompleteTasks.taskIds);
+
+  const [completeTaskMap, setCompleteTaskMap] = useState<ITaskMap>(completeTasks.taskMap);
+  const [completeTaskIds, setCompleteTaskIds] = useState<string[]>(completeTasks.taskIds);
 
   const addTaskItem = () => {
     const createdDate = Date.now();
     const taskItem: ITaskItem = {
-      id: uuid.v4(),
+      taskId: uuid.v4(),
+      userId: userDef.userId,
       name: 'Some more shit that I have to do',
       type: 'task',
       completed: false,
       createdDate,
-      dueDay: unixTimestampToDayDate(createdDate),
     };
 
-    setIncompleteTaskIds([ ...incompleteTaskIds, taskItem.id ]);
-    setIncompleteTaskMap({ ...incompleteTaskMap, [taskItem.id]: taskItem });
+    setIncompleteTaskIds([ ...incompleteTaskIds, taskItem.taskId ]);
+    setIncompleteTaskMap({ ...incompleteTaskMap, [taskItem.taskId]: taskItem });
   };
 
   const updateTaskItem = (taskItem: ITaskItem) => {
-    const { id } = taskItem;
-    const incompleted = incompleteTaskMap[id];
-    const completed = completeTaskMap[id];
+    const { taskId } = taskItem;
+    const incompleted = incompleteTaskMap[taskId];
+    const completed = completeTaskMap[taskId];
 
     if (incompleted) {
       const beingCompleted = taskItem.completed;
       if (beingCompleted) {
-        setIncompleteTaskIds(incompleteTaskIds.filter(_id => _id !== id));
-        const { [id]: omit, ..._incompleteTaskMap } = incompleteTaskMap;
+        setIncompleteTaskIds(incompleteTaskIds.filter(_taskId => _taskId !== taskId));
+        const { [taskId]: omit, ..._incompleteTaskMap } = incompleteTaskMap;
         setIncompleteTaskMap(_incompleteTaskMap);
 
-        setCompleteTaskIds([ id, ...completeTaskIds ]);
-        setCompleteTaskMap({ ...completeTaskMap, [id]: taskItem });
+        setCompleteTaskIds([ taskId, ...completeTaskIds ]);
+        setCompleteTaskMap({ ...completeTaskMap, [taskId]: taskItem });
       } else {
-        setIncompleteTaskMap({ ...incompleteTaskMap, [id]: taskItem });
+        setIncompleteTaskMap({ ...incompleteTaskMap, [taskId]: taskItem });
       }
     }
     if (completed) {
       const beingIncompleted = !taskItem.completed;
       if (beingIncompleted) {
-        setCompleteTaskIds(completeTaskIds.filter(_id => _id !== id));
-        const { [id]: omit, ..._completeTaskMap } = completeTaskMap;
+        setCompleteTaskIds(completeTaskIds.filter(_taskId => _taskId !== taskId));
+        const { [taskId]: omit, ..._completeTaskMap } = completeTaskMap;
         setCompleteTaskMap(_completeTaskMap);
 
-        setIncompleteTaskIds([ id, ...incompleteTaskIds ]);
-        setIncompleteTaskMap({ ...incompleteTaskMap, [id]: taskItem });
+        setIncompleteTaskIds([ taskId, ...incompleteTaskIds ]);
+        setIncompleteTaskMap({ ...incompleteTaskMap, [taskId]: taskItem });
       } else {
-        setCompleteTaskMap({ ...completeTaskMap, [id]: taskItem });
+        setCompleteTaskMap({ ...completeTaskMap, [taskId]: taskItem });
       }
     }
   };
 
-  const deleteTaskItem = (id: string) => {
-    const incompleted = incompleteTaskMap[id];
-    const completed = completeTaskMap[id];
+  const deleteTaskItem = (taskId: string) => {
+    const incompleted = incompleteTaskMap[taskId];
+    const completed = completeTaskMap[taskId];
 
     if (incompleted) {
-      setIncompleteTaskIds(incompleteTaskIds.filter(_id => _id !== id));
-      const { [id]: omit, ..._incompleteTaskMap } = incompleteTaskMap;
+      setIncompleteTaskIds(incompleteTaskIds.filter(_taskId => _taskId !== taskId));
+      const { [taskId]: omit, ..._incompleteTaskMap } = incompleteTaskMap;
       setIncompleteTaskMap(_incompleteTaskMap);
     }
     if (completed) {
-      setCompleteTaskIds(completeTaskIds.filter(_id => _id !== id));
-      const { [id]: omit, ..._completeTaskMap } = completeTaskMap;
+      setCompleteTaskIds(completeTaskIds.filter(_taskId => _taskId !== taskId));
+      const { [taskId]: omit, ..._completeTaskMap } = completeTaskMap;
       setCompleteTaskMap(_completeTaskMap);
     }
   };
 
   const moveTaskItem = (taskItem: ITaskItem, to: number, columnId: ColumnId) => {
-    const incompleted = incompleteTaskMap[taskItem.id];
-    const completed = completeTaskMap[taskItem.id];
+    const incompleted = incompleteTaskMap[taskItem.taskId];
+    const completed = completeTaskMap[taskItem.taskId];
 
     if (incompleted && columnId === 'incomplete' || completed && columnId === 'complete') {
       const [taskIds, setTaskIds] = incompleted
         ? [incompleteTaskIds, setIncompleteTaskIds]
         : [completeTaskIds, setCompleteTaskIds];
       
-      const from = taskIds.findIndex(id => id === taskItem.id);
+      const from = taskIds.findIndex(taskId => taskId === taskItem.taskId);
       setTaskIds(moveItemInList(taskIds, from, to));
     } else {
       const item = {
@@ -109,18 +116,14 @@ export function TasksPage(props: TasksProps) {
         ? [completeTaskIds, setCompleteTaskIds, completeTaskMap, setCompleteTaskMap]
         : [incompleteTaskIds, setIncompleteTaskIds, incompleteTaskMap, setIncompleteTaskMap];
 
-      setFromTaskIds(fromTaskIds.filter(id => id !== item.id));
-      const { [item.id]: omit, ..._fromTaskMap } = fromTaskMap;
+      setFromTaskIds(fromTaskIds.filter(taskId => taskId !== item.taskId));
+      const { [item.taskId]: omit, ..._fromTaskMap } = fromTaskMap;
       setFromTaskMap(_fromTaskMap);
 
-      setToTaskMap({ ...toTaskMap, [item.id]: item });
-      setToTaskIds(insertAtIndex(toTaskIds, item.id, to));
+      setToTaskMap({ ...toTaskMap, [item.taskId]: item });
+      setToTaskIds(insertAtIndex(toTaskIds, item.taskId, to));
     }
   };
-
-  const hideCompletedTasks = () => {
-    setShowCompleted(false);
-  }
 
   return (
     <div className="tasks">
@@ -136,19 +139,16 @@ export function TasksPage(props: TasksProps) {
         moveTaskItem={moveTaskItem}
       />
 
-      {showCompleted && (
-        <TaskList
-          taskMap={completeTaskMap}
-          taskIds={completeTaskIds}
-          columnId="complete"
-          title="Shit I've already done."
-          noTasksMessage="I really haven't done shit."
-          icon={<Icon iconName="visibility_off" className="hide-list" onClick={hideCompletedTasks} />}
-          updateTaskItem={updateTaskItem}
-          deleteTaskItem={deleteTaskItem}
-          moveTaskItem={moveTaskItem}
-        />
-      )}
+      <TaskList
+        taskMap={completeTaskMap}
+        taskIds={completeTaskIds}
+        columnId="complete"
+        title="Shit I've already done."
+        noTasksMessage="I really haven't done shit."
+        updateTaskItem={updateTaskItem}
+        deleteTaskItem={deleteTaskItem}
+        moveTaskItem={moveTaskItem}
+      />
     </div>
   );
 }

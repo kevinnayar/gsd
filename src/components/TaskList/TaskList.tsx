@@ -28,6 +28,8 @@ export function TaskList(props: TaskListProps) {
     moveTaskItem,
   } = props;
 
+  console.log('tm', taskMap);
+
   return (
     <div className="column">
       <div className="column__title">
@@ -36,10 +38,10 @@ export function TaskList(props: TaskListProps) {
       <div className="column__body">
         <div className="task-list task-list--incompleted">
           {!taskIds.length ? <p className="no-task-list-item">{noTasksMessage}</p> : null}
-          {taskIds.map((id, index) => {
-            const task = taskMap[id];
+          {taskIds.map((taskId, index) => {
+            const task = taskMap[taskId];
             return (
-              <div className="task-list__item" key={task.id}>
+              <div className="task-list__item" key={task.taskId}>
                 <TaskDropZone
                   position={index}
                   columnId={columnId}

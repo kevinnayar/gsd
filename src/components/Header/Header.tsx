@@ -1,19 +1,20 @@
 import * as React from 'react';
 import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
 import { AuthenticationLinks } from '../AuthenticationLinks/AuthenticationLinks';
-import { IThemeMode } from '../../../types/baseTypes';
+import { UserDef } from '../../../types/authTypes';
 
 type HeaderProps = {
-  title: string;
-  themeMode: IThemeMode,
+  className: string,
+  userDef: null | UserDef,
+  logout: () => void;
 };
 
 export function Header(props: HeaderProps) {
   return (
-    <div className="app__header">
-      <h1>{props.title}</h1>
-      <ThemeSwitch themeMode={props.themeMode} />
-      <AuthenticationLinks />
+    <div className={props.className}>
+      <h1>Get Shit Done</h1>
+      <ThemeSwitch />
+      <AuthenticationLinks userDef={props.userDef} logout={props.logout} />
     </div>
   );
 }

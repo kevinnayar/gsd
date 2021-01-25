@@ -116,13 +116,17 @@ body.light-mode {
     }
   }
 
-  .auth-form form {
-    input {
-      background: $gray-color-300;
-      color: $gray-color-700;
+  .auth-form {
+    border: 1px solid $gray-color-300;
 
-      &:focus {
-        background: $gray-color-400;
+    form {
+      input {
+        background: $gray-color-300;
+        color: $gray-color-700;
+
+        &:focus {
+          background: $gray-color-400;
+        }
       }
     }
   }
@@ -186,13 +190,17 @@ body.dark-mode {
     }
   }
 
-  .auth-form form {
-    input {
-      background: $gray-color-800;
-      color: $gray-color-400;
+  .auth-form {
+    border: 1px solid $gray-color-800;
 
-      &:focus {
-        background: $gray-color-700;
+    form {
+      input {
+        background: $gray-color-800;
+        color: $gray-color-400;
+
+        &:focus {
+          background: $gray-color-700;
+        }
       }
     }
   }
@@ -255,7 +263,9 @@ body.dark-mode {
 
 .auth-form {
   width: 420px;
-  margin: 0 auto;
+  margin: 100px auto 0;
+  padding: 2%;
+  border-radius: 4px;
 
   @media only screen and (max-width: $mobile-width) {
     flex-basis: 90%;

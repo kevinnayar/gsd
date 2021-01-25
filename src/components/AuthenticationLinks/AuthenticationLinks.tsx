@@ -1,28 +1,28 @@
 import * as React from 'react';
-import { useContext } from 'react';
-import UserAuthContext from '../../context/userAuthContext';
 import { Link } from 'react-router-dom';
 import { Icon } from '../Icon/Icon';
-import { logout } from '../../../utils/authUtils';
+import { UserDef } from '../../../types/authTypes';
 
-export function AuthenticationLinks() {
-  const [userAuth, setUserAuth] = useContext(UserAuthContext);
+type AuthenticationLinksProps = {
+  userDef: null | UserDef;
+  logout: () => void;
+};
 
+export function AuthenticationLinks(props: AuthenticationLinksProps) {
   return (
     <div className="authentication-links">
-      {userAuth.userDef
+      {props.userDef
         ? (
           <>
             <Link
               className="authentication-links__link"
               to=""
-              onClick={async () => {
-                await logout(userAuth.auth);
-                setUserAuth({ ...userAuth, userDef: undefined });
+              onClick={() => {
+                props.logout();
               }}
             >
               <Icon iconName="lock" className="user-logout" />
-              <p>Logout <span>({userAuth.userDef.displayName})</span></p>
+              <p>Logout <span>({props.userDef.displayName})</span></p>
             </Link>
           </>
         ): (

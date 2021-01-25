@@ -1,7 +1,14 @@
-import { IThemeMode } from '../types/baseTypes';
+import { IThemeMode, ApiXferStatus } from '../types/baseTypes';
 
-export function errorObjectToString(error: Error, fallback?: string): string {
-  return error.message || fallback || 'There was an error. Please try again later.';
+export function extractError(error: string | { message: string }, fallback?: string): string {
+  let result = fallback || 'There was an error. Please try again later.';
+
+  if (typeof error === 'string') result = error;
+  if (typeof error === 'object' && 'message' in error && typeof error.message === 'string') {
+    result = error.message;
+  }
+
+  return result;
 }
 
 export function isMobileDevice(): boolean {
@@ -45,7 +52,7 @@ const GSD_THEME_KEY = 'GSD_THEME_KEY';
 
 const DEFAULT_THEME_MODE: IThemeMode = 'light-mode';
 
-export function getLocalTheme(storage: Storage): IThemeMode {
+function getLocalTheme(storage: Storage): IThemeMode {
   return storage.getItem && storage.getItem(GSD_THEME_KEY) !== null && storage.getItem(GSD_THEME_KEY) !== 'null'
     ? (storage.getItem(GSD_THEME_KEY) as IThemeMode)
     : DEFAULT_THEME_MODE;
@@ -55,10 +62,47 @@ export function setLocalTheme(storage: Storage, themeMode: IThemeMode) {
   if (storage.setItem) storage.setItem(GSD_THEME_KEY, themeMode);
 }
 
-export function initThemeMode(storage: Storage): IThemeMode {
+export function initLocalTheme(storage: Storage): IThemeMode {
   const themeMode: IThemeMode = getLocalTheme(storage);
   document.body.classList.add(themeMode);
   setLocalTheme(storage, themeMode);
   return themeMode;
 }
+
+export function apiXferInit(): ApiXferStatus {
+  return {
+    requested: false,
+    succeeded: false,
+    failed: false,
+    error: null,
+  };
+}
+
+export function apiXferRequested(): ApiXferStatus {
+  return {
+    requested: true,
+    succeeded: false,
+    failed: false,
+    error: null,
+  };
+}
+
+export function apiXferSucceeded(): ApiXferStatus {
+  return {
+    requested: false,
+    succeeded: true,
+    failed: false,
+    error: null,
+  };
+}
+
+export function apiXferFailed(error: string | { message: string }): ApiXferStatus {
+  return {
+    requested: false,
+    succeeded: false,
+    failed: true,
+    error: extractError(error),
+  };
+}
+
 

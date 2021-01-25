@@ -1,21 +1,21 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { setLocalTheme } from '../../../utils/baseUtils';
+import { initLocalTheme, setLocalTheme } from '../../../utils/baseUtils';
 import { IThemeMode } from '../../../types/baseTypes';
 
-export function ThemeSwitch(props: { themeMode: IThemeMode }) {
-  const [themeMode, setThemeMode] = useState<IThemeMode>(props.themeMode);
+export function ThemeSwitch() {
+  const [theme, setTheme] = useState<IThemeMode>(initLocalTheme(window.localStorage));
 
   const handleOnChange = (e: any) => {
-    const newThemeMode = themeMode === 'light-mode' ? 'dark-mode' : 'light-mode';
-    document.body.classList.remove(themeMode);
-    document.body.classList.add(newThemeMode);
-    setThemeMode(newThemeMode);
-    setLocalTheme(window.localStorage, newThemeMode);
+    const newTheme = theme === 'light-mode' ? 'dark-mode' : 'light-mode';
+    document.body.classList.remove(theme);
+    document.body.classList.add(newTheme);
+    setTheme(newTheme);
+    setLocalTheme(window.localStorage, newTheme);
   }
 
   return (
-    <div className={`theme-switch theme-switch--${themeMode}`}>
+    <div className={`theme-switch theme-switch--${theme}`}>
       <label className="theme-switch__label" htmlFor="themeSwitchCheckbox">
         <input className="theme-switch__checkbox" type="checkbox" id="themeSwitchCheckbox" onChange={handleOnChange} />
         <div className="theme-switch__slider theme-switch__slider--round"></div>

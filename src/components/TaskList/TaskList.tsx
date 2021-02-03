@@ -1,68 +1,34 @@
 import * as React from 'react';
-import { TaskDropZone } from '../TaskDropZone/TaskDropZone';
 import { TaskItem } from '../TaskItem/TaskItem';
-import { ITaskMap, ITaskItem, ColumnId } from '../../../types/baseTypes';
+import { TaskMap, ITaskItem } from '../../types/taskTypes';
 
 type TaskListProps = {
-  taskMap: ITaskMap,
-  taskIds: string[],
-  columnId: ColumnId;
-  title: string,
-  noTasksMessage: string,
-  icon?: any,
-  updateTaskItem: (taskItem: ITaskItem) => void,
-  deleteTaskItem: (taskItemId: string) => void,
-  moveTaskItem: (taskItem: ITaskItem, to: number, columnId: ColumnId) => void,
+  taskMap: TaskMap;
+  getTaskDocBlob: (taskId: string) => void;
+  updateTask: (task: ITaskItem) => void;
+  deleteTask: (taskId: string) => void;
 };
 
 export function TaskList(props: TaskListProps) {
-  const {
-    taskMap,
-    taskIds,
-    columnId,
-    title,
-    noTasksMessage,
-    icon,
-    updateTaskItem,
-    deleteTaskItem,
-    moveTaskItem,
-  } = props;
+  const taskIds = Object.keys(props.taskMap);
 
-  console.log('tm', taskMap);
+  if (!taskIds.length) return <p>No tasks.</p>
 
   return (
-    <div className="column">
-      <div className="column__title">
-        <h2>{title}</h2> {icon}
-      </div>
-      <div className="column__body">
-        <div className="task-list task-list--incompleted">
-          {!taskIds.length ? <p className="no-task-list-item">{noTasksMessage}</p> : null}
-          {taskIds.map((taskId, index) => {
-            const task = taskMap[taskId];
-            return (
-              <div className="task-list__item" key={task.taskId}>
-                <TaskDropZone
-                  position={index}
-                  columnId={columnId}
-                  updatePosition={moveTaskItem}
-                />
-                <TaskItem
-                  taskItem={task}
-                  taskIds={taskIds}
-                  updateTaskItem={updateTaskItem}
-                  deleteTaskItem={deleteTaskItem}
-                />
-              </div>
-            );
-          })}
-          <TaskDropZone
-            position={taskIds.length}
-            columnId={columnId}
-            updatePosition={moveTaskItem}
-          />
-        </div>
-      </div>
+    <div className="task-list">
+      {taskIds.map((id) => {
+        const task = props.taskMap[id];
+        return (
+          <div className="task-list__item" key={id}>
+            <TaskItem
+              task={task}
+              getTaskDocBlob={props.getTaskDocBlob}
+              updateTask={props.updateTask}
+              deleteTask={props.deleteTask}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

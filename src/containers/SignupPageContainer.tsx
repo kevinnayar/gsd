@@ -6,9 +6,9 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import firebase from '../../config/firebase';
 import { authSignup } from '../store/auth/authActions';
-import { extractError } from '../../utils/baseUtils';
-import { InternalUserCredentials, UserDefPartial, UserDef } from '../../types/authTypes';
-import { AppReducer, ApiXferStatus } from '../../types/baseTypes';
+import { extractError } from '../utils/baseUtils';
+import { InternalUserCredentials, UserDefPartial, UserDef } from '../types/authTypes';
+import { AppReducer, ApiXferStatus } from '../types/baseTypes';
 
 type SignupProps = {
   db: firebase.firestore.Firestore,
@@ -85,7 +85,7 @@ export function SignupPage(props: SignupProps) {
     }
   }
 
-  if (props.userDef) return <Redirect to="/home" />;
+  if (props.userDef) return <Redirect to="/tasks" />;
   
   return (
     <div className="auth-form auth-form--signup">

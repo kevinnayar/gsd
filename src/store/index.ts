@@ -2,11 +2,13 @@ import { applyMiddleware, createStore, compose, Store, combineReducers, Reducer 
 import thunk from 'redux-thunk';
 import auth from './auth/authReducer';
 import tasks from './tasks/tasksReducer';
-import { AppReducer, AppDispatch } from '../../types/baseTypes';
+import taskDocs from './taskDocs/taskDocsReducer';
+import { AppReducer, AppDispatch } from '../types/baseTypes';
 
 const reducers: Reducer<AppReducer, AppDispatch> = combineReducers({
   auth,
   tasks,
+  taskDocs,
 });
 
 const middleware = [

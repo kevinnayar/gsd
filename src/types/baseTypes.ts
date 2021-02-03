@@ -1,6 +1,7 @@
-import firebase from '../config/firebase';
+import firebase from '../../config/firebase';
 import { UserDef, AuthDispatch } from './authTypes';
 import { TaskMap, TasksDispatch } from './taskTypes';
+import { TaskDocMap } from './taskDocTypes';
 
 export type IThemeMode = 'light-mode' | 'dark-mode';
 
@@ -29,15 +30,25 @@ export type AuthReducer = {
 };
 
 export type TasksReducer = {
+  taskGetAllXferStatus: ApiXferStatus;
   taskAddXferStatus: ApiXferStatus;
   taskUpdateXferStatus: ApiXferStatus;
   taskRemoveXferStatus: ApiXferStatus;
-  tasksMap: null | TaskMap;
+  taskMap: null | TaskMap;
+};
+
+export type TaskDocsReducer = {
+  taskDocGetXferStatus: ApiXferStatus;
+  taskDocAddXferStatus: ApiXferStatus;
+  taskDocUpdateXferStatus: ApiXferStatus;
+  taskDocRemoveXferStatus: ApiXferStatus;
+  blobs: null | TaskDocMap;
 };
 
 export type AppReducer = {
   auth: AuthReducer;
   tasks: TasksReducer;
+  taskDocs: TaskDocsReducer;
 };
 
 export type AppDispatch = AuthDispatch | TasksDispatch;

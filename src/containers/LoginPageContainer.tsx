@@ -6,9 +6,9 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import firebase from '../../config/firebase';
 import { authLogin } from '../store/auth/authActions';
-import { extractError } from '../../utils/baseUtils';
-import { InternalUserCredentials, UserDef } from '../../types/authTypes';
-import { AppReducer, ApiXferStatus } from '../../types/baseTypes';
+import { extractError } from '../utils/baseUtils';
+import { InternalUserCredentials, UserDef } from '../types/authTypes';
+import { AppReducer, ApiXferStatus } from '../types/baseTypes';
 
 type LoginProps = {
   db: firebase.firestore.Firestore,
@@ -65,7 +65,7 @@ export function LoginPage(props: LoginProps) {
     }
   }
 
-  if (props.userDef) return <Redirect to="/home" />;
+  if (props.userDef) return <Redirect to="/tasks" />;
   
   return (
     <div className="auth-form auth-form--login">

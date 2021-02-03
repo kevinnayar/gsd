@@ -4,7 +4,7 @@ import {
   apiXferRequested,
   apiXferSucceeded,
   apiXferFailed,
-} from '../../../utils/baseUtils';
+} from '../../utils/baseUtils';
 import {
   AUTH_CHECK_REQUESTED,
   AUTH_CHECK_SUCCEEDED,
@@ -19,8 +19,8 @@ import {
   AUTH_SIGNUP_SUCCEEDED,
   AUTH_SIGNUP_FAILED,
   AuthDispatch,
-} from '../../../types/authTypes';
-import { AuthReducer } from '../../../types/baseTypes';
+} from '../../types/authTypes';
+import { AuthReducer } from '../../types/baseTypes';
 
 const initialState: AuthReducer = {
   authCheckXferStatus: apiXferInit(),

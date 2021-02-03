@@ -1,4 +1,4 @@
-import firebase from '../config/firebase';
+import firebase from '../../config/firebase';
 import { BaseDispatch } from './baseTypes';
 
 export const AUTH_CHECK_REQUESTED = 'AUTH_CHECK_REQUESTED';

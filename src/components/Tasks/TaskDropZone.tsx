@@ -4,7 +4,8 @@ import {
   DropTargetMonitor,
   DragObjectWithType
 } from 'react-dnd';
-import { ITaskItem, ColumnId } from '../../../types/baseTypes';
+import { ITaskItem } from '../../types/taskTypes';
+import { ColumnId } from '../../types/baseTypes';
 
 type TaskDropZoneProps = {
   position: number;

@@ -1,14 +1,19 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Icon } from '../Icon/Icon';
-import { UserDef } from '../../../types/authTypes';
+import { createTask } from '../../utils/baseUtils';
+import { UserDef } from '../../types/authTypes';
+import { ITaskItem } from '../../types/taskTypes';
 
 type AuthenticationLinksProps = {
   userDef: null | UserDef;
   logout: () => void;
+  addTask: (task: ITaskItem) => void;
 };
 
 export function AuthenticationLinks(props: AuthenticationLinksProps) {
+  const history = useHistory();
+
   return (
     <div className="authentication-links">
       {props.userDef
@@ -17,12 +22,19 @@ export function AuthenticationLinks(props: AuthenticationLinksProps) {
             <Link
               className="authentication-links__link"
               to=""
-              onClick={() => {
-                props.logout();
+              onClick={(e: any) => {
+                e.preventDefault();
+                const task = createTask(props.userDef.userId);
+                props.addTask(task);
+                history.push(`tasks/${task.taskId}`);
               }}
             >
+              <Icon iconName="add" className="add-task" />
+              <p>Add Task</p>
+            </Link>
+            <Link className="authentication-links__link" to="" onClick={props.logout}>
               <Icon iconName="lock" className="user-logout" />
-              <p>Logout <span>({props.userDef.displayName})</span></p>
+              <p>Logout - <span>{props.userDef.displayName}</span></p>
             </Link>
           </>
         ): (

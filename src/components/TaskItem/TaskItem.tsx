@@ -1,27 +1,18 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { DragSourceMonitor, useDrag } from 'react-dnd';
-
 import { Icon } from '../Icon/Icon';
-import { ITaskItem } from '../../../types/baseTypes';
+import { ITaskItem } from '../../types/taskTypes';
 
 type TaskItemProps = {
-  taskItem: ITaskItem;
-  taskIds: string[];
-  updateTaskItem: (taskItem: ITaskItem) => void;
-  deleteTaskItem: (taskItemId: string) => void;
+  task: ITaskItem;
+  getTaskDocBlob: (taskId: string) => void;
+  updateTask: (task: ITaskItem) => void;
+  deleteTask: (taskId: string) => void;
 };
 
 export function TaskItem(props: TaskItemProps) {
-  const [name, setName] = useState(props.taskItem.name);
+  const [name, setName] = useState(props.task.name);
   const [focused, setFocused] = useState(false);
-
-  const [{ isDragging }, drag] = useDrag({
-    item: props.taskItem,
-    collect: (monitor: DragSourceMonitor) => ({
-      isDragging: !!monitor.isDragging()
-    })
-  });
 
   const handleOnChangeName = (e: any) => {
     e.preventDefault();
@@ -38,51 +29,48 @@ export function TaskItem(props: TaskItemProps) {
     setFocused(false);
     const trimmed = name.trim();
     setName(trimmed);
-    const taskItem = { ...props.taskItem, name: trimmed };
-    props.updateTaskItem(taskItem);
+    const task = {
+      ...props.task,
+      name: trimmed,
+    };
+    props.updateTask(task);
   };
   
   const handleOnChangeTaskCompletion = (e: any) => {
     e.preventDefault();
-    const updatedTaskItem = {
-      ...props.taskItem,
-      completed: !props.taskItem.completed
+    const task = {
+      ...props.task,
+      completed: !props.task.completed
     };
-    props.updateTaskItem(updatedTaskItem);
+    props.updateTask(task);
   };
 
   const handleOnDeleteTask = (e: any) => {
     e.preventDefault();
-    props.deleteTaskItem(props.taskItem.taskId);
+    props.deleteTask(props.task.taskId);
   };
 
-  const completedClass = props.taskItem.completed ? 'complete' : 'incomplete';
-  const focusedClass = !props.taskItem.completed && focused ? 'focused' : 'unfocused';
+  const completedClass = props.task.completed ? 'complete' : 'incomplete';
+  const focusedClass = !props.task.completed && focused ? 'focused' : 'unfocused';
 
   return (
-    <div
-      ref={drag}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-      className={`task-item task-item--${completedClass} task-item--${focusedClass}`}
-    >
-      <div className="task-item__actions task-item__actions--before">
-        <Icon
-          iconName="drag_indicator"
-          className="drag-task"
-          onClick={() => {}}
-        />
-      </div>
+    <div className={`task-item task-item--${completedClass} task-item--${focusedClass}`}>
       <input
         className="task-item__name"
         value={name}
-        readOnly={props.taskItem.completed}
+        readOnly={props.task.completed}
         onChange={handleOnChangeName}
         onBlur={handleOnBlurName}
         onFocus={handleOnFocusName}
       />
-      <div className="task-item__actions task-item__actions--after">
+      <div className="task-item__actions">
         <Icon
-          iconName={!props.taskItem.completed ? "done" : "clear"}
+          iconName="create"
+          className="edit-task"
+          onClick={(_e) => props.getTaskDocBlob(props.task.taskId)}
+        />
+        <Icon
+          iconName={!props.task.completed ? "done" : "clear"}
           className="complete-task"
           onClick={handleOnChangeTaskCompletion}
         />

@@ -19,7 +19,7 @@ import {
   AUTH_SIGNUP_REQUESTED,
   AUTH_SIGNUP_SUCCEEDED,
   AUTH_SIGNUP_FAILED,
-} from '../../../types/authTypes';
+} from '../../types/authTypes';
 
 async function asyncUserCreateDef(
   db: firebase.firestore.Firestore, 

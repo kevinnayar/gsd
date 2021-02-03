@@ -1,4 +1,8 @@
+import * as uuid from 'uuid';
+import firebase from '../../config/firebase';
 import { IThemeMode, ApiXferStatus } from '../types/baseTypes';
+import { ITaskItem } from '../types/taskTypes';
+import { TaskDoc } from '../types/taskDocTypes';
 
 export function extractError(error: string | { message: string }, fallback?: string): string {
   let result = fallback || 'There was an error. Please try again later.';
@@ -104,5 +108,45 @@ export function apiXferFailed(error: string | { message: string }): ApiXferStatu
     error: extractError(error),
   };
 }
+
+export function createTask(userId: string): ITaskItem {
+  const createdDate = firebase.firestore.Timestamp.fromDate(new Date());
+  const task: ITaskItem = {
+    taskId: uuid.v4(),
+    userId: userId,
+    name: '',
+    type: 'task',
+    completed: false,
+    createdDate,
+  };
+  return task;
+}
+
+export function createTaskDoc(task: ITaskItem): TaskDoc {
+  const { taskId, userId } = task;
+  const createdDate = firebase.firestore.Timestamp.fromDate(new Date());
+  const taskDoc: TaskDoc = {
+    taskId,
+    userId,
+    blob: '',
+    type: 'taskDoc',
+    createdDate,
+    updatedDate: createdDate,
+  };
+  return taskDoc;
+}
+
+export function updateTaskDoc(taskDocIn: TaskDoc, blob: string): TaskDoc {
+  const updatedDate = firebase.firestore.Timestamp.fromDate(new Date());
+  const taskDoc: TaskDoc = {
+    ...taskDocIn,
+    blob,
+    updatedDate,
+  };
+  return taskDoc;
+}
+
+
+
 
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { initLocalTheme, setLocalTheme } from '../../../utils/baseUtils';
-import { IThemeMode } from '../../../types/baseTypes';
+import { initLocalTheme, setLocalTheme } from '../../utils/baseUtils';
+import { IThemeMode } from '../../types/baseTypes';
 
 export function ThemeSwitch() {
   const [theme, setTheme] = useState<IThemeMode>(initLocalTheme(window.localStorage));

@@ -1,4 +1,4 @@
-import { apiXferInit, apiXferRequested, apiXferSucceeded, apiXferFailed } from '../../../utils/baseUtils';
+import { apiXferInit, apiXferRequested, apiXferSucceeded, apiXferFailed } from '../../utils/baseUtils';
 import {
   TASKS_GET_ALL_REQUESTED,
   TASKS_GET_ALL_SUCCEEDED,
@@ -9,33 +9,34 @@ import {
   TASK_UPDATE_REQUESTED,
   TASK_UPDATE_SUCCEEDED,
   TASK_UPDATE_FAILED,
-  TASKS_REMOVE_REQUESTED,
-  TASKS_REMOVE_SUCCEEDED,
-  TASKS_REMOVE_FAILED,
+  TASK_REMOVE_REQUESTED,
+  TASK_REMOVE_SUCCEEDED,
+  TASK_REMOVE_FAILED,
   TasksDispatch,
-} from '../../../types/taskTypes';
-import { TasksReducer } from '../../../types/baseTypes';
+} from '../../types/taskTypes';
+import { TasksReducer } from '../../types/baseTypes';
 
 const initialState: TasksReducer = {
+  taskGetAllXferStatus: apiXferInit(),
   taskAddXferStatus: apiXferInit(),
   taskUpdateXferStatus: apiXferInit(),
   taskRemoveXferStatus: apiXferInit(),
-  tasksMap: null,
+  taskMap: null,
 };
 
 export default function reducer(state: TasksReducer = initialState, action: TasksDispatch): TasksReducer {
   switch (action.type) {
     case TASKS_GET_ALL_REQUESTED:
-      return { ...state, taskAddXferStatus: apiXferRequested() };
+      return { ...state, taskGetAllXferStatus: apiXferRequested() };
     case TASKS_GET_ALL_SUCCEEDED: {
       return {
         ...state,
-        taskAddXferStatus: apiXferSucceeded(),
-        tasksMap: action.payload,
+        taskGetAllXferStatus: apiXferSucceeded(),
+        taskMap: action.payload,
       };
     }
     case TASKS_GET_ALL_FAILED:
-      return { ...state, taskAddXferStatus: apiXferFailed(action.error) };
+      return { ...state, taskGetAllXferStatus: apiXferFailed(action.error) };
 
     case TASK_ADD_REQUESTED:
       return { ...state, taskAddXferStatus: apiXferRequested() };
@@ -43,7 +44,10 @@ export default function reducer(state: TasksReducer = initialState, action: Task
       return {
         ...state,
         taskAddXferStatus: apiXferSucceeded(),
-        tasksMap: action.payload,
+        taskMap: {
+          ...state.taskMap,
+          ...action.payload,
+        }
       };
     }
     case TASK_ADD_FAILED:
@@ -55,22 +59,27 @@ export default function reducer(state: TasksReducer = initialState, action: Task
       return {
         ...state,
         taskUpdateXferStatus: apiXferSucceeded(),
-        tasksMap: action.payload,
+        taskMap: {
+          ...state.taskMap,
+          ...action.payload,
+        },
       };
     }
     case TASK_UPDATE_FAILED:
       return { ...state, taskUpdateXferStatus: apiXferFailed(action.error) };
 
-    case TASKS_REMOVE_REQUESTED:
+    case TASK_REMOVE_REQUESTED:
       return { ...state, taskRemoveXferStatus: apiXferRequested() };
-    case TASKS_REMOVE_SUCCEEDED: {
+    case TASK_REMOVE_SUCCEEDED: {
+      const taskMap = { ...state.taskMap || {} } ;
+      delete taskMap[action.payload];
       return {
         ...state,
         taskRemoveXferStatus: apiXferSucceeded(),
-        tasksMap: action.payload,
+        taskMap,
       };
     }
-    case TASKS_REMOVE_FAILED:
+    case TASK_REMOVE_FAILED:
       return { ...state, taskRemoveXferStatus: apiXferFailed(action.error) };
 
     // default

@@ -8,9 +8,11 @@ import { History } from 'history';
 import firebase from '../../config/firebase';
 import { Header } from '../components/Header/Header';
 import { authCheck, authLogout } from '../store/auth/authActions';
-import { extractError } from '../../utils/baseUtils';
-import { UserDef } from '../../types/authTypes';
-import { AppReducer } from '../../types/baseTypes';
+import { taskAdd } from '../store/tasks/tasksActions';
+import { extractError } from '../utils/baseUtils';
+import { AppReducer } from '../types/baseTypes';
+import { UserDef } from '../types/authTypes';
+import { ITaskItem } from '../types/taskTypes';
 
 type BasePageProps = {
   location: { pathname: string },
@@ -19,6 +21,7 @@ type BasePageProps = {
   children: any,
   authCheck: () => void,
   authLogout: () => void,
+  addTask: (task: ITaskItem) => void,
 };
 
 type ErrorInfo = {
@@ -69,12 +72,19 @@ export class BasePage extends React.Component<BasePageProps, BasePageState> {
 
   render() {
     const { userDef, error } = this.state;
-    const { authLogout, location } = this.props;
+    const { location, authLogout, addTask } = this.props;
     const { pathname } = location;
 
     if (!PUBLIC_ROUTES.includes(pathname) && !userDef) return <Redirect to='/login' />;
+
+    if (!PUBLIC_ROUTES.includes(pathname) && !userDef) {
+      console.log({msg: 'is not a public route', pathname, userDef});
+    }
+    if (PUBLIC_ROUTES.includes(pathname) && userDef) {
+      console.log({msg: 'is a public route', pathname, userDef});
+    }
     
-    if (PUBLIC_ROUTES.includes(pathname) && userDef) return <Redirect to='/home' />;
+    // if (PUBLIC_ROUTES.includes(pathname) && userDef) return <Redirect to='/tasks' />;
 
     const getClassName = (prefix: string) => `${prefix} ${error ? `${prefix}--error` : ''}`;
 
@@ -84,6 +94,7 @@ export class BasePage extends React.Component<BasePageProps, BasePageState> {
           className={getClassName('app__header')}
           userDef={userDef}
           logout={authLogout}
+          addTask={addTask}
         />
         <div className={getClassName('app__body')}>
           {!error
@@ -112,6 +123,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<any, any, any>, ownProps: Ba
   return {
     authCheck: () => dispatch(authCheck(ownProps.db, ownProps.auth)),
     authLogout: () => dispatch(authLogout(ownProps.auth)),
+    addTask: (task: ITaskItem) => dispatch(taskAdd(ownProps.db, task)),
   };
 }
 

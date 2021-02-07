@@ -16,7 +16,7 @@ import {
 } from '../../types/taskDocTypes';
 import { TaskDocsReducer } from '../../types/baseTypes';
 
-const initialState: TaskDocsReducer = {
+export const initialState: TaskDocsReducer = {
   taskDocGetXferStatus: apiXferInit(),
   taskDocAddXferStatus: apiXferInit(),
   taskDocUpdateXferStatus: apiXferInit(),

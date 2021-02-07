@@ -16,7 +16,7 @@ import {
 } from '../../types/taskTypes';
 import { TasksReducer } from '../../types/baseTypes';
 
-const initialState: TasksReducer = {
+export const initialState: TasksReducer = {
   taskGetAllXferStatus: apiXferInit(),
   taskAddXferStatus: apiXferInit(),
   taskUpdateXferStatus: apiXferInit(),

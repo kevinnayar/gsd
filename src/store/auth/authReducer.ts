@@ -23,7 +23,7 @@ import {
 } from '../../types/authTypes';
 import { AuthReducer } from '../../types/baseTypes';
 
-const initialState: AuthReducer = {
+export const initialState: AuthReducer = {
   authCheckXferStatus: apiXferInit(),
   authLoginXferStatus: apiXferInit(),
   authLogoutXferStatus: apiXferInit(),

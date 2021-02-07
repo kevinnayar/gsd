@@ -1,7 +1,7 @@
 import firebase from '../../config/firebase';
 import { UserDef, AuthDispatch } from './authTypes';
 import { TaskMap, TasksDispatch } from './taskTypes';
-import { TaskDocMap } from './taskDocTypes';
+import { TaskDocMap, TaskDocDispatch } from './taskDocTypes';
 
 export type IThemeMode = 'light-mode' | 'dark-mode';
 
@@ -52,7 +52,7 @@ export type AppReducer = {
   taskDocs: TaskDocsReducer;
 };
 
-export type AppDispatch = AuthDispatch | TasksDispatch;
+export type AppDispatch = AuthDispatch | TasksDispatch | TaskDocDispatch;
 
 
 

@@ -7,6 +7,7 @@ import {
   AuthLogoutDispatch,
   AuthSignupDispatch,
   AuthCheckDispatch,
+  AuthRedirectPathnameDispatch,
   AUTH_CHECK_REQUESTED,
   AUTH_CHECK_SUCCEEDED,
   AUTH_CHECK_FAILED,
@@ -19,6 +20,7 @@ import {
   AUTH_SIGNUP_REQUESTED,
   AUTH_SIGNUP_SUCCEEDED,
   AUTH_SIGNUP_FAILED,
+  AUTH_SET_REDIRECT_PATHNAME,
 } from '../../types/authTypes';
 
 async function asyncUserCreateDef(
@@ -177,3 +179,13 @@ export function authCheck(db: firebase.firestore.Firestore, auth: firebase.auth.
     }
   };
 }
+
+export function authSetRedirectPathname(pathname: null | string) {
+  return (dispatch: (action: AuthRedirectPathnameDispatch) => void) => {
+    dispatch({
+      type: AUTH_SET_REDIRECT_PATHNAME,
+      payload: pathname,
+    });
+  };
+}
+

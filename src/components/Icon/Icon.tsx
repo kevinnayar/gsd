@@ -8,9 +8,9 @@ type IconProps = {
 
 export function Icon(props: IconProps) {
   return (
-    <i className={`material-icons icon icon--${props.className}`} onClick={props.onClick}>
-      {props.iconName}
-    </i>
+    <div className={`icon icon--${props.className}`} onClick={props.onClick}>
+      <i className="material-icons">{props.iconName}</i>
+    </div>
   );
 }
 

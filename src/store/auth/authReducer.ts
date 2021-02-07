@@ -19,6 +19,7 @@ import {
   AUTH_SIGNUP_SUCCEEDED,
   AUTH_SIGNUP_FAILED,
   AuthDispatch,
+  AUTH_SET_REDIRECT_PATHNAME,
 } from '../../types/authTypes';
 import { AuthReducer } from '../../types/baseTypes';
 
@@ -30,6 +31,7 @@ const initialState: AuthReducer = {
   userDef: null,
   db: firebase.firestore(),
   auth: firebase.auth(),
+  redirectPathname: null,
 };
 
 export default function reducer(state: AuthReducer = initialState, action: AuthDispatch): AuthReducer {
@@ -81,6 +83,8 @@ export default function reducer(state: AuthReducer = initialState, action: AuthD
     }
     case AUTH_SIGNUP_FAILED:
       return { ...state, authSignupXferStatus: apiXferFailed(action.error) };
+
+    case AUTH_SET_REDIRECT_PATHNAME: return { ...state, redirectPathname: action.payload };
 
     // default
     default:

@@ -17,6 +17,8 @@ export const AUTH_SIGNUP_REQUESTED = 'AUTH_SIGNUP_REQUESTED';
 export const AUTH_SIGNUP_SUCCEEDED = 'AUTH_SIGNUP_SUCCEEDED';
 export const AUTH_SIGNUP_FAILED = 'AUTH_SIGNUP_FAILED';
 
+export const AUTH_SET_REDIRECT_PATHNAME = 'AUTH_SET_REDIRECT_PATHNAME';
+
 export type AuthCheckDispatch = BaseDispatch & {
   type:
     | typeof AUTH_CHECK_REQUESTED
@@ -43,11 +45,16 @@ export type AuthSignupDispatch = BaseDispatch & {
     | typeof AUTH_SIGNUP_FAILED;
 };
 
+export type AuthRedirectPathnameDispatch = BaseDispatch & {
+  type: typeof AUTH_SET_REDIRECT_PATHNAME
+};
+
 export type AuthDispatch =
   | AuthCheckDispatch
   | AuthLoginDispatch
   | AuthLogoutDispatch
-  | AuthSignupDispatch;
+  | AuthSignupDispatch
+  | AuthRedirectPathnameDispatch;
 
 export type InternalUserCredentials = {
   email: string;

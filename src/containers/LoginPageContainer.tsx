@@ -1,37 +1,28 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
-import { ThunkDispatch } from 'redux-thunk';
+import { useSelector, useDispatch } from 'react-redux';
+import { NavLink, useHistory } from 'react-router-dom';
 
-import firebase from '../../config/firebase';
 import { authLogin } from '../store/auth/authActions';
-import { extractError } from '../utils/baseUtils';
-import { InternalUserCredentials, UserDef } from '../types/authTypes';
-import { AppReducer, ApiXferStatus } from '../types/baseTypes';
+import { extractError, validateEmail, validatePassword } from '../utils/baseUtils';
+import { InternalUserCredentials } from '../types/authTypes';
+import { AppReducer } from '../types/baseTypes';
 
-type LoginProps = {
-  db: firebase.firestore.Firestore,
-  auth: firebase.auth.Auth,
-  userDef: null | UserDef, 
-  authLoginXferStatus: ApiXferStatus,
-  authLogin: (
-    db: firebase.firestore.Firestore,
-    auth: firebase.auth.Auth,
-    userCredentials: InternalUserCredentials
-  ) => void,
-};
+export default function LoginPage() {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { db, auth, userDef, authLoginXferStatus, redirectPathname } = useSelector((state: AppReducer) => state.auth);
 
-export function LoginPage(props: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<null | string>(null);
+  const [canSubmit, setCanSubmit] = useState(false);
 
   useEffect(() => {
-    if (props.authLoginXferStatus.failed) {
-      setError(extractError(props.authLoginXferStatus.error));
+    if (authLoginXferStatus.failed) {
+      setError(extractError(authLoginXferStatus.error));
     }
-  }, [props.authLoginXferStatus]);
+  }, [authLoginXferStatus]);
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     evt.preventDefault();
@@ -51,6 +42,11 @@ export function LoginPage(props: LoginProps) {
     }
   }
 
+  useEffect(() => {
+    const valid = email && password && validateEmail(email) && validatePassword(password);
+    setCanSubmit(valid);
+  }, [email, password]);
+
   const handleLogin = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
@@ -58,19 +54,29 @@ export function LoginPage(props: LoginProps) {
       if (email && password) {
         setError(null);
         const credentials: InternalUserCredentials = { email, password };
-        props.authLogin(props.db, props.auth, credentials);
+        dispatch(authLogin(db, auth, credentials));
       }
     } catch (e) {
       setError(extractError(e));
     }
   }
 
-  if (props.userDef) return <Redirect to="/tasks" />;
+  useEffect(() => {
+    if (userDef) {
+      const pathname = redirectPathname || '/tasks';
+      history.push(pathname);
+    }
+  }, [userDef]);
   
   return (
     <div className="auth-form auth-form--login">
-      <h2>Login</h2>
-      {error && <p className="error">{error}</p>}
+      <div className="auth-form__nav-links">
+        <NavLink to="/login">Login</NavLink>
+        <NavLink to="/signup">Signup</NavLink>
+      </div>
+
+      {error && <p className="auth-form__error">{error}</p>}
+
       <form onSubmit={handleLogin}>
         <div>
           <label htmlFor="email">Email</label>
@@ -81,32 +87,9 @@ export function LoginPage(props: LoginProps) {
           <input value={password} name="password" type="password" onChange={handleChange} />
         </div>
         <div>
-          <button>Login</button>
+          <button className={canSubmit ? 'btn' : 'btn btn--disabled'}>Login</button>
         </div>
       </form>
     </div>
   );
 }
-
-function mapStateToProps(state: AppReducer) {
-  return {
-    db: state.auth.db,
-    auth: state.auth.auth,
-    userDef: state.auth.userDef,
-    authLoginXferStatus: state.auth.authLoginXferStatus,
-  };
-}
-
-function mapDispatchToProps(dispatch: ThunkDispatch<any, any, any>) {
-  return {
-    authLogin: (
-      db: firebase.firestore.Firestore,
-      auth: firebase.auth.Auth,
-      userCredentials: InternalUserCredentials
-    ) => dispatch(authLogin(db, auth, userCredentials)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
-
-

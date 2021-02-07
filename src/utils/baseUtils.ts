@@ -47,13 +47,15 @@ export function moveItemInList<T>(listIn: T[], from: number, _to: number): T[] {
   return listOut;
 }
 
-export function insertAtIndex<T>(listIn: T[], itemIn: T, index: number): T[] {
-  const listOut: T[] = [...listIn.slice(0, index), itemIn, ...listIn.slice(index)];
-  return listOut;
+export function validateEmail(value: string): boolean {
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
+}
+
+export function validatePassword(value: string): boolean {
+  return value.length >= 8;
 }
 
 const GSD_THEME_KEY = 'GSD_THEME_KEY';
-
 const DEFAULT_THEME_MODE: IThemeMode = 'light-mode';
 
 function getLocalTheme(storage: Storage): IThemeMode {

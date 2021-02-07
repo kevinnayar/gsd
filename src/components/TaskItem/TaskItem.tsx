@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
 import { Icon } from '../Icon/Icon';
+import { taskUpdate, taskRemove } from '../../store/tasks/tasksActions';
 import { ITaskItem } from '../../types/taskTypes';
+import { AppReducer } from '../../types/baseTypes';
 
-type TaskItemProps = {
-  task: ITaskItem;
-  getTaskDocBlob: (taskId: string) => void;
-  updateTask: (task: ITaskItem) => void;
-  deleteTask: (taskId: string) => void;
-};
+export function TaskItem(props: { task: ITaskItem }) {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { db } = useSelector((state: AppReducer) => state.auth); 
 
-export function TaskItem(props: TaskItemProps) {
   const [name, setName] = useState(props.task.name);
   const [focused, setFocused] = useState(false);
 
@@ -33,7 +35,7 @@ export function TaskItem(props: TaskItemProps) {
       ...props.task,
       name: trimmed,
     };
-    props.updateTask(task);
+    dispatch(taskUpdate(db, task));
   };
   
   const handleOnChangeTaskCompletion = (e: any) => {
@@ -42,12 +44,12 @@ export function TaskItem(props: TaskItemProps) {
       ...props.task,
       completed: !props.task.completed
     };
-    props.updateTask(task);
+    dispatch(taskUpdate(db, task));
   };
 
   const handleOnDeleteTask = (e: any) => {
     e.preventDefault();
-    props.deleteTask(props.task.taskId);
+    dispatch(taskRemove(db, props.task.taskId));
   };
 
   const completedClass = props.task.completed ? 'complete' : 'incomplete';
@@ -67,7 +69,7 @@ export function TaskItem(props: TaskItemProps) {
         <Icon
           iconName="create"
           className="edit-task"
-          onClick={(_e) => props.getTaskDocBlob(props.task.taskId)}
+          onClick={(_e) => history.push(`/tasks/${props.task.taskId}`)}
         />
         <Icon
           iconName={!props.task.completed ? "done" : "clear"}
@@ -83,3 +85,4 @@ export function TaskItem(props: TaskItemProps) {
     </div>
   );
 }
+

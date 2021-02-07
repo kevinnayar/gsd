@@ -20,28 +20,28 @@ import {
   TASKDOC_REMOVE_FAILED,
 } from '../../types/taskDocTypes';
 
-async function asyncTaskDocGet(db: firebase.firestore.Firestore, userId: string, taskId: string): Promise<TaskDocMap> {
-  const tasksRef = db.collection('taskDocs').where('userId', '==', userId).where('taskId', '==', taskId);
-  const tasksPromise: Promise<TaskDocMap> = tasksRef.get().then((tasksSnapshot) => {
-    const taskMap = {};
-    tasksSnapshot.forEach((doc) => {
-      const task = doc.data();
-      taskMap[task.taskId] = task;
-    });
-    return taskMap;
+async function asyncTaskDocGet(db: firebase.firestore.Firestore, taskId: string) {
+  const taskDocRef = db.collection('taskDocs').doc(taskId).get();
+  const taskDocPromise: Promise<TaskDocMap> = taskDocRef.then((doc) => {
+    if (doc.exists) {
+      const taskDoc = doc.data() as TaskDoc;
+      return { [taskId]: taskDoc };
+    } else {
+      return {};
+    }
   });
-  const tasks = await tasksPromise;
-  return tasks;
+  const taskDocResult = await taskDocPromise;
+  return taskDocResult;
 }
 
-export function taskDocGet(db: firebase.firestore.Firestore, userId: string, taskId: string) {
+export function taskDocGet(db: firebase.firestore.Firestore, taskId: string) {
   return async (dispatch: (action: TaskDocGetDispatch) => void) => {
     dispatch({
       type: TASKDOC_GET_REQUESTED,
     });
 
     try {
-      const payload = await asyncTaskDocGet(db, userId, taskId);
+      const payload = await asyncTaskDocGet(db, taskId);
       dispatch({
         type: TASKDOC_GET_SUCCEEDED,
         payload,

@@ -1,44 +1,75 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import debounce from 'lodash.debounce';
+import { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import { Icon } from '../Icon/Icon';
-import { updateTaskDoc } from '../../utils/baseUtils';
+
+import { taskDocGet, taskDocUpdate } from '../../store/taskDocs/taskDocsActions';
+
+import { extractError, updateTaskDoc } from '../../utils/baseUtils';
+import { AppReducer } from '../../types/baseTypes';
 import { TaskDoc } from '../../types/taskDocTypes';
+     
 
-type TaskDocEditorProps = {
-  taskName: string,
-  taskDoc: TaskDoc,
-  updateTaskDoc: (taskDoc: TaskDoc) => void;
-};      
+export function TaskDocEditor(props: { taskId: string }) {
+  const dispatch = useDispatch();
+  const location = useLocation();
 
-export function TaskDocEditor(props: TaskDocEditorProps) {
-  console.log(props.taskDoc.blob);
-  const [markdownText, setMarkdownText] = useState<string>(props.taskDoc.blob);
+  const { db } = useSelector((state: AppReducer) => state.auth);
+  const { blobs, taskDocGetXferStatus } = useSelector((state: AppReducer) => state.taskDocs);
+  
+  const [taskDoc, setTaskDoc] = useState(null);
+  const [error, setError] = useState(null);
   const [mode, setMode] = useState<'edit'|'preview'>('edit');
+
+  useEffect(() => {
+    dispatch(taskDocGet(db, props.taskId));
+  }, [location]);
+
+  useEffect(() => {
+    if (taskDocGetXferStatus.succeeded && blobs && blobs[props.taskId]) {
+      setTaskDoc(blobs[props.taskId]);
+    }
+    if (taskDocGetXferStatus.failed) {
+      setError(extractError(taskDocGetXferStatus.error));
+    }
+  }, [taskDocGetXferStatus]);  
 
   const iconName = mode === 'edit' ? 'visibility' : 'create';
   const toggleMode = () => setMode(mode === 'edit' ? 'preview' : 'edit');
 
-  const onInputChange = (e: any) => {
-    const blob = e.currentTarget.value;
-    setMarkdownText(blob);
-    const taskDoc = updateTaskDoc(props.taskDoc, blob);
-    props.updateTaskDoc(taskDoc);
-  }
+  const debouncedOnChange = useCallback(debounce(doc => {
+    dispatch(taskDocUpdate(db, doc));
+  }, 500, { maxWait: 1000 }), []);
 
-  useEffect(() => {
-    setMarkdownText(props.taskDoc.blob);
-  }, [props.taskDoc]);
+  const onChange = (newTaskDoc: TaskDoc) => {
+    setTaskDoc(newTaskDoc);
+    debouncedOnChange(newTaskDoc);
+  };
+
+  if (!taskDoc) return null;
 
   return (
-    <div className="editor">
-      <h1 className="editor__title">{props.taskName}</h1>
-      <div className={`editor__section editor__section--${mode}`}>
-        <Icon iconName={iconName} className="editor-mode-toggle" onClick={toggleMode} />
-        <textarea value={markdownText} onChange={onInputChange} className={`textarea textarea--${mode === 'edit' ? 'visible' : 'hidden'}`} />
-        {mode === 'preview' && <ReactMarkdown plugins={[gfm]} source={markdownText} />}
+    <div className="task-doc-editor">
+      {/* <h1 className="task-doc-editor__title">{taskDoc.taskName}</h1> */}
+      <div className={`task-doc-editor__section task-doc-editor__section--${mode}`}>
+        <Icon iconName={iconName} className="task-doc-editor-mode-toggle" onClick={toggleMode} />
+        <textarea
+          className={`textarea textarea--${mode === 'edit' ? 'visible' : 'hidden'}`}
+          value={taskDoc.blob} 
+          onChange={(e: any) => {
+            const blob = e.currentTarget.value;
+            const newTaskDoc = updateTaskDoc(taskDoc, blob);
+            onChange(newTaskDoc);
+          }}
+        />
+        {mode === 'preview' && <ReactMarkdown plugins={[gfm]} source={taskDoc.blob} />}
       </div>
     </div>
   );
 }
+
+

@@ -1,40 +1,31 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
-import { ThunkDispatch } from 'redux-thunk';
+import { useSelector, useDispatch } from 'react-redux';
+import { NavLink, useHistory } from 'react-router-dom';
 
-import firebase from '../../config/firebase';
 import { authSignup } from '../store/auth/authActions';
-import { extractError } from '../utils/baseUtils';
-import { InternalUserCredentials, UserDefPartial, UserDef } from '../types/authTypes';
-import { AppReducer, ApiXferStatus } from '../types/baseTypes';
+import { extractError, validateEmail, validatePassword } from '../utils/baseUtils';
+import { UserDefPartial } from '../types/authTypes';
+import { AppReducer } from '../types/baseTypes';
 
-type SignupProps = {
-  db: firebase.firestore.Firestore,
-  auth: firebase.auth.Auth,
-  userDef: null | UserDef, 
-  authSignupXferStatus: ApiXferStatus,
-  authSignup: (
-    db: firebase.firestore.Firestore,
-    auth: firebase.auth.Auth,
-    userCredentials: InternalUserCredentials,
-    userDefPartial: UserDefPartial,
-  ) => void,
-};
 
-export function SignupPage(props: SignupProps) {
+export default function SignupPage() {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { db, auth, userDef, authSignupXferStatus, redirectPathname } = useSelector((state: AppReducer) => state.auth);
+
   const [fullName, setFullName] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<null | string>(null);
+  const [canSubmit, setCanSubmit] = useState(false);
 
   useEffect(() => {
-    if (props.authSignupXferStatus.failed) {
-      setError(extractError(props.authSignupXferStatus.error));
+    if (authSignupXferStatus.failed) {
+      setError(extractError(authSignupXferStatus.error));
     }
-  }, [props.authSignupXferStatus]);
+  }, [authSignupXferStatus]);
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     evt.preventDefault();
@@ -62,6 +53,11 @@ export function SignupPage(props: SignupProps) {
     }
   }
 
+  useEffect(() => {
+    const valid = fullName && displayName && email && password && validateEmail(email) && validatePassword(password);
+    setCanSubmit(valid);
+  }, [fullName, displayName, email, password]);
+
   const handleSignup = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
@@ -76,21 +72,30 @@ export function SignupPage(props: SignupProps) {
           type: 'user',
           roleType: 'basic',
         };
-        authSignup
       
-        props.authSignup(props.db, props.auth, userCredentials, userDefPartial);
+        dispatch(authSignup(db, auth, userCredentials, userDefPartial));
       }
     } catch (e) {
       setError(extractError(e));
     }
   }
 
-  if (props.userDef) return <Redirect to="/tasks" />;
+  useEffect(() => {
+    if (userDef) {
+      const pathname = redirectPathname || '/tasks';
+      history.push(pathname);
+    }
+  }, [userDef]);
   
   return (
     <div className="auth-form auth-form--signup">
-      <h2>Signup</h2>
-      {error && <p className="error">{error}</p>}
+      <div className="auth-form__nav-links">
+        <NavLink to="/login">Login</NavLink>
+        <NavLink to="/signup">Signup</NavLink>
+      </div>
+
+      {error && <p className="auth-form__error">{error}</p>}
+
       <form onSubmit={handleSignup}>
         <div>
           <label htmlFor="fullName">Full Name</label>
@@ -109,33 +114,9 @@ export function SignupPage(props: SignupProps) {
           <input value={password} name="password" type="password" onChange={handleChange} />
         </div>
         <div>
-          <button>Signup</button>
+          <button className={canSubmit ? 'btn' : 'btn btn--disabled'}>Signup</button>
         </div>
       </form>
     </div>
   );
 }
-
-function mapStateToProps(state: AppReducer) {
-  return {
-    db: state.auth.db,
-    auth: state.auth.auth,
-    userDef: state.auth.userDef,
-    authSignupXferStatus: state.auth.authSignupXferStatus,
-  };
-}
-
-function mapDispatchToProps(dispatch: ThunkDispatch<any, any, any>) {
-  return {
-    authSignup: (
-      db: firebase.firestore.Firestore,
-      auth: firebase.auth.Auth,
-      userCredentials: InternalUserCredentials,
-      userDefPartial: UserDefPartial,
-    ) => dispatch(authSignup(db, auth, userCredentials, userDefPartial)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignupPage);
-
-

@@ -1,132 +1,17 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
-import { withRouter } from 'react-router-dom';
-import { ThunkDispatch } from 'redux-thunk';
-import { History } from 'history';
+import { useState } from 'react';
+import { Sidebar } from '../components/Sidebar/Sidebar';
 
-import firebase from '../../config/firebase';
-import { Header } from '../components/Header/Header';
-import { authCheck, authLogout } from '../store/auth/authActions';
-import { taskAdd } from '../store/tasks/tasksActions';
-import { extractError } from '../utils/baseUtils';
-import { AppReducer } from '../types/baseTypes';
-import { UserDef } from '../types/authTypes';
-import { ITaskItem } from '../types/taskTypes';
+export default function BasePage(props: { children: any }) {
+  const [collapsed, setCollapsed] = useState(false);
+  const getClassNames = (prefix: string) => `${prefix} ${prefix}--sidebar-${collapsed ? 'hidden' : 'visible'}`;
 
-type BasePageProps = {
-  location: { pathname: string },
-  history: History,
-  userDef: null | UserDef,
-  children: any,
-  authCheck: () => void,
-  authLogout: () => void,
-  addTask: (task: ITaskItem) => void,
-};
-
-type ErrorInfo = {
-  componentStack: string,
-};
-
-type BasePageState = {
-  userDef: null | UserDef,
-  error: void | Error,
-  errorInfo: void | ErrorInfo,
-};
-
-const PUBLIC_ROUTES = ['/login', '/signup'];
-
-export class BasePage extends React.Component<BasePageProps, BasePageState> {
-  constructor(props: any) {
-    super(props);
-
-    this.state = {
-      error: undefined,
-      errorInfo: undefined,
-      userDef: props.userDef,
-    };
-  }
-
-  componentDidMount = async () => {
-    this.props.authCheck();
-  }
-
-  componentDidUpdate = (prevProps: BasePageProps) => {
-    if (prevProps.userDef !== this.props.userDef) {
-      this.setState({ 
-        userDef: this.props.userDef,
-      });
-    }
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { error };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    this.setState({
-      error,
-      errorInfo,
-    });
-  }
-
-  render() {
-    const { userDef, error } = this.state;
-    const { location, authLogout, addTask } = this.props;
-    const { pathname } = location;
-
-    if (!PUBLIC_ROUTES.includes(pathname) && !userDef) return <Redirect to='/login' />;
-
-    if (!PUBLIC_ROUTES.includes(pathname) && !userDef) {
-      console.log({msg: 'is not a public route', pathname, userDef});
-    }
-    if (PUBLIC_ROUTES.includes(pathname) && userDef) {
-      console.log({msg: 'is a public route', pathname, userDef});
-    }
-    
-    // if (PUBLIC_ROUTES.includes(pathname) && userDef) return <Redirect to='/tasks' />;
-
-    const getClassName = (prefix: string) => `${prefix} ${error ? `${prefix}--error` : ''}`;
-
-    return (
-      <div className={getClassName('app')}>
-        <Header
-          className={getClassName('app__header')}
-          userDef={userDef}
-          logout={authLogout}
-          addTask={addTask}
-        />
-        <div className={getClassName('app__body')}>
-          {!error
-            ? this.props.children
-            : <p className="error">{extractError(error)}</p>
-          }
-        </div>
-      </div>
-    );
-  }
+  return (
+    <div className={getClassNames('app')}>
+      <Sidebar className={getClassNames('app__sidebar')} collapsed={collapsed} setCollapsed={setCollapsed} />
+      <div className={getClassNames('app__content')}>{props.children}</div>
+    </div>
+  );
 }
-
-type BaseOwnProps = {
-  auth: firebase.auth.Auth,
-  db: firebase.firestore.Firestore,
-  children: any,
-};
-
-function mapStateToProps(state: AppReducer) {
-  return {
-    userDef: state.auth.userDef,
-  };
-}
-
-function mapDispatchToProps(dispatch: ThunkDispatch<any, any, any>, ownProps: BaseOwnProps) {
-  return {
-    authCheck: () => dispatch(authCheck(ownProps.db, ownProps.auth)),
-    authLogout: () => dispatch(authLogout(ownProps.auth)),
-    addTask: (task: ITaskItem) => dispatch(taskAdd(ownProps.db, task)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BasePage));
 
 

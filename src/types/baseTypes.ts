@@ -27,6 +27,7 @@ export type AuthReducer = {
   userDef: null | UserDef;
   db: firebase.firestore.Firestore;
   auth: firebase.auth.Auth;
+  redirectPathname: null | string;
 };
 
 export type TasksReducer = {

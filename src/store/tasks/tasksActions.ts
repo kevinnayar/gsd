@@ -1,23 +1,20 @@
 import firebase from '../../../config/firebase';
+import { createTaskDoc } from '../../utils/baseUtils';
 import {
   ITaskItem,
   TaskMap,
-
   TaskGetAllDispatch,
   TASKS_GET_ALL_REQUESTED,
   TASKS_GET_ALL_SUCCEEDED,
   TASKS_GET_ALL_FAILED,
-
   TaskAddDispatch,
   TASK_ADD_REQUESTED,
   TASK_ADD_SUCCEEDED,
   TASK_ADD_FAILED,
-
   TaskUpdateDispatch,
   TASK_UPDATE_REQUESTED,
   TASK_UPDATE_SUCCEEDED,
   TASK_UPDATE_FAILED,
-
   TaskRemoveDispatch,
   TASK_REMOVE_REQUESTED,
   TASK_REMOVE_SUCCEEDED,
@@ -63,7 +60,17 @@ export function tasksGetAll(db: firebase.firestore.Firestore, userId: string) {
 }
 
 async function asyncTaskAdd(db: firebase.firestore.Firestore, task: ITaskItem): Promise<{ [id: string]: ITaskItem }> {
-  await db.collection('tasks').doc(task.taskId).set(task);
+  const batch = db.batch();
+
+  const taskRef = db.collection('tasks').doc(task.taskId);
+  batch.set(taskRef, { ...task });
+
+  const taskDoc = createTaskDoc(task);
+  const taskDocRef = db.collection('taskDocs').doc(task.taskId);
+  batch.set(taskDocRef, { ...taskDoc });
+
+  await batch.commit();
+  
   return { [task.taskId]: task };
 }
 

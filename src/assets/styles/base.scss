@@ -122,12 +122,15 @@
 }
 
 .auth-form {
-  width: 420px;
+  background: $color-bg;
+  border: 1px solid $color-border;
+  width: 20%;
   margin: 0 auto;
-  padding: 6%;
+  padding: 1.5%;
   border-radius: 4px;
   align-self: center;
-  border: 1px solid $color-border;
+  position: fixed;
+  left: 4%;
 
   &__nav-links {
     display: flex;
@@ -346,6 +349,21 @@
 
     &--hidden {
       display: none;
+    }
+  }
+
+  table {
+    width: 100%;
+
+    th {
+      font-weight: bold;
+      background: $color-text;
+      color: $color-bg;
+    }
+
+    th, td {
+      border: 1px solid $color-border;
+      padding: 8px;
     }
   }
 }

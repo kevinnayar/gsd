@@ -47,6 +47,11 @@ export function moveItemInList<T>(listIn: T[], from: number, _to: number): T[] {
   return listOut;
 }
 
+export function getRandomInt(limit: number, floored?: boolean): number {
+  const method = floored ? Math.floor : Math.ceil;
+  return method(Math.random() * limit);
+}
+
 export function validateEmail(value: string): boolean {
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
 }

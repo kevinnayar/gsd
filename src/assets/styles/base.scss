@@ -44,7 +44,8 @@
     display: flex;
     margin: 0;
     padding: 200px 0;
-    height: 100%;
+    height: auto;
+    min-height: 100%;
     transition: $hover-transition;
 
     &--sidebar-hidden {
@@ -131,6 +132,7 @@
   align-self: center;
   position: fixed;
   left: 4%;
+  top: 205px;
 
   &__nav-links {
     display: flex;
@@ -236,6 +238,16 @@
   }
 }
 
+.image-randomizer {
+  position: fixed;
+  left: 28%;
+  top: 0;
+  width: calc(100% - 28%);
+  height: 100%;
+  opacity: 0.5;
+  background-size: cover;
+}
+
 .icon {
   width: 48px;
   height: 48px;
@@ -275,14 +287,19 @@
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.165);
+  background: $color-blue;
+  cursor: pointer;
+  transition: $hover-transition;
+
+  &:hover {
+    background: lighten($color-blue, 5%);
+  }
 
   &__name {
     width: 100%;
-    height: 40px;
     margin: 0 6px 0 18px;
-    padding: 4px 8px;
-    border: none;
-    outline: none;
+    height: 60px;
+    line-height: 60px;
     font-size: 1em;
     background: transparent;
     color: $color-white;
@@ -292,12 +309,6 @@
     .task-item__name {
       text-decoration: line-through;
       color: rgba(255, 255, 255, 0.67);
-    }
-  }
-
-  &--focused {
-    .task-item__name {
-      background: rgba(255, 255, 255, 0.165);
     }
   }
 
@@ -330,42 +341,27 @@
 .task-doc-editor {
   min-height: 1000px;
 
-  .icon {
-    position: fixed;
-    left: calc(28% + 32px);
-    top: 32px;
-  }
-
-  .textarea {
+  &__title {
     background: transparent;
-    border: none;
     outline: none;
-    width: 100%;
-    min-height: 1000px;
-    resize: none;
+    border: none;
     color: $color-text;
+    font-weight: bold;
+    font-size: 3.2em;
+    outline-offset: 0;
     font-family: $font-body;
-    font-size: 1.6em;
 
-    &--hidden {
-      display: none;
-    }
-  }
-
-  table {
-    width: 100%;
-
-    th {
-      font-weight: bold;
-      background: $color-text;
-      color: $color-bg;
-    }
-
-    th, td {
-      border: 1px solid $color-border;
-      padding: 8px;
+    &:focus {
+      background: transparent;
+      outline: none;
+      border: none;
     }
   }
 }
 
-
+.ck.ck-editor__editable_inline,
+.ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}

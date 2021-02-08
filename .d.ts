@@ -10,3 +10,7 @@ declare module '*.jpg' {
   const content: any;
   export default content;
 }
+
+declare module '@ckeditor/ckeditor5-react';
+
+declare module '@ckeditor/ckeditor5-build-balloon';

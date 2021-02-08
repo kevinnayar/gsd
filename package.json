@@ -4,7 +4,7 @@
   "description": "gsd",
   "scripts": {
     "test": "jest --watch",
-    "start": "parcel ./src/index.html",
+    "start": "parcel ./src/index.html --no-source-maps",
     "build": "tsc"
   },
   "jest": {
@@ -22,6 +22,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
+    "@ckeditor/ckeditor5-build-balloon": "^25.0.0",
+    "@ckeditor/ckeditor5-build-classic": "^25.0.0",
+    "@ckeditor/ckeditor5-markdown-gfm": "^25.0.0",
+    "@ckeditor/ckeditor5-react": "^3.0.0",
     "@svgr/parcel-plugin-svgr": "^5.1.0",
     "@types/jest": "^26.0.9",
     "@types/react": "^16.9.45",
@@ -67,7 +71,8 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "eslint": "^6.8.0",
     "husky": "^4.2.1",
-    "jest": "^25.3.0"
+    "jest": "^25.3.0",
+    "parcel": "^2.0.0-beta.1"
   },
   "author": "Kevin Nayar"
 }

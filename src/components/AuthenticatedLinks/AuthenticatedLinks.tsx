@@ -6,11 +6,10 @@ import { Icon } from '../Icon/Icon';
 import { AppReducer } from '../../types/baseTypes';
 
 import { authLogout } from '../../store/auth/authActions';
-import { taskAdd } from '../../store/tasks/tasksActions';
+import { taskAdd, tasksGetAll } from '../../store/tasks/tasksActions';
 import { createTask } from '../../utils/baseUtils';
 
-
-export function AuthenticatedLinks() {  
+export function AuthenticatedLinks() {
   const { db, auth, userDef } = useSelector((state: AppReducer) => state.auth);
   if (!db || !auth || !userDef) return null;
 
@@ -18,10 +17,15 @@ export function AuthenticatedLinks() {
 
   return (
     <div className="authenticated-links">
-      <Link className="authenticated-links__link" to="" onClick={() => {
-        const task = createTask(userDef.userId);
-        dispatch(taskAdd(db, task))}
-      }>
+      <Link className="authenticated-links__link" to="" onClick={(e) => {
+        e.preventDefault();
+        const task = {
+          ...createTask(userDef.userId),
+          name: 'New Task',
+        };
+        dispatch(taskAdd(db, task))
+        dispatch(tasksGetAll(db, userDef.userId));
+      }}>
         <Icon iconName="add" className="add-task" />
       </Link>
       <Link className="authenticated-links__link" to="" onClick={() => dispatch(authLogout(auth))}>

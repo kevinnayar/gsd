@@ -1,73 +1,82 @@
 import * as React from 'react';
 import debounce from 'lodash.debounce';
+
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import gfm from 'remark-gfm';
-import { Icon } from '../Icon/Icon';
+
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
 
 import { taskDocGet, taskDocUpdate } from '../../store/taskDocs/taskDocsActions';
-
+import { taskUpdate } from '../../store/tasks/tasksActions';
 import { extractError, updateTaskDoc } from '../../utils/baseUtils';
+
 import { AppReducer } from '../../types/baseTypes';
+import { ITaskItem } from '../../types/taskTypes';
 import { TaskDoc } from '../../types/taskDocTypes';
-     
 
-export function TaskDocEditor(props: { taskId: string }) {
+export function TaskDocEditor(props: { task: ITaskItem, taskDoc: TaskDoc }) {
   const dispatch = useDispatch();
-  const location = useLocation();
-
   const { db } = useSelector((state: AppReducer) => state.auth);
-  const { blobs, taskDocGetXferStatus } = useSelector((state: AppReducer) => state.taskDocs);
-  
-  const [taskDoc, setTaskDoc] = useState(null);
-  const [error, setError] = useState(null);
-  const [mode, setMode] = useState<'edit'|'preview'>('edit');
+  const [taskName, setTaskName] = useState(props.task.name);
+  const [taskDoc, setTaskDoc] = useState(props.taskDoc);
 
-  useEffect(() => {
-    dispatch(taskDocGet(db, props.taskId));
-  }, [location]);
+  // task name
+  const onChangeTaskName = (e: any) => {
+    setTaskName(e.target.value);
+  };
 
-  useEffect(() => {
-    if (taskDocGetXferStatus.succeeded && blobs && blobs[props.taskId]) {
-      setTaskDoc(blobs[props.taskId]);
-    }
-    if (taskDocGetXferStatus.failed) {
-      setError(extractError(taskDocGetXferStatus.error));
-    }
-  }, [taskDocGetXferStatus]);  
+  const onBlurTaskName = (e: any) => {
+    const name = e.target.value.trim();
+    setTaskName(name);
+    const task = {
+      ...props.task,
+      name,
+    };
+    dispatch(taskUpdate(db, task));
+  };
 
-  const iconName = mode === 'edit' ? 'visibility' : 'create';
-  const toggleMode = () => setMode(mode === 'edit' ? 'preview' : 'edit');
-
-  const debouncedOnChange = useCallback(debounce(doc => {
+  // blob
+  const debouncedOnChangeBlob = useCallback(debounce(doc => {
     dispatch(taskDocUpdate(db, doc));
   }, 500, { maxWait: 1000 }), []);
 
-  const onChange = (newTaskDoc: TaskDoc) => {
+  const onChangeBlob = (_e: any, editor: any) => {
+    const blob = editor.getData();
+    const newTaskDoc = updateTaskDoc(taskDoc, blob);
     setTaskDoc(newTaskDoc);
-    debouncedOnChange(newTaskDoc);
+    debouncedOnChangeBlob(newTaskDoc);
+  };
+
+  const onBlurBlob = (_e: any, editor: any) => {
+    const blob = editor.getData();
+    const newTaskDoc = updateTaskDoc(taskDoc, blob);
+    setTaskDoc(newTaskDoc);
+    dispatch(taskDocUpdate(db, newTaskDoc));
   };
 
   if (!taskDoc) return null;
 
+  const config = {
+    toolbar: ['heading', 'bold', 'italic', '|', 'link', 'numberedList', 'bulletedList'],
+  };
+
   return (
     <div className="task-doc-editor">
-      {/* <h1 className="task-doc-editor__title">{taskDoc.taskName}</h1> */}
-      <div className={`task-doc-editor__section task-doc-editor__section--${mode}`}>
-        <Icon iconName={iconName} className="task-doc-editor-mode-toggle" onClick={toggleMode} />
-        <textarea
-          className={`textarea textarea--${mode === 'edit' ? 'visible' : 'hidden'}`}
-          value={taskDoc.blob} 
-          onChange={(e: any) => {
-            const blob = e.currentTarget.value;
-            const newTaskDoc = updateTaskDoc(taskDoc, blob);
-            onChange(newTaskDoc);
-          }}
-        />
-        {mode === 'preview' && <ReactMarkdown plugins={[gfm]} source={taskDoc.blob} />}
-      </div>
+      <input
+        className="task-doc-editor__title"
+        value={taskName}
+        onChange={onChangeTaskName}
+        onBlur={onBlurTaskName}
+      />
+      <CKEditor
+        editor={BalloonEditor}
+        data={taskDoc.blob}
+        config={config}
+        onChange={onChangeBlob}
+        onBlur={onBlurBlob}
+      />
     </div>
   );
 }

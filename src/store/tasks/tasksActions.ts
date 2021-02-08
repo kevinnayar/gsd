@@ -1,4 +1,4 @@
-import firebase from '../../../config/firebase';
+import firebase, { auth, db } from '../../../config/firebase';
 import { createTaskDoc } from '../../utils/baseUtils';
 import {
   ITaskItem,
@@ -21,10 +21,7 @@ import {
   TASK_REMOVE_FAILED,
 } from '../../types/taskTypes';
 
-async function asyncTasksGetAll(
-  db: firebase.firestore.Firestore,
-  userId: string
-): Promise<TaskMap> {
+async function asyncTasksGetAll(userId: string): Promise<TaskMap> {
   const tasksRef = db.collection('tasks').where('userId', '==', userId);
   const tasksPromise: Promise<TaskMap> = tasksRef.get().then((tasksSnapshot) => {
     const taskMap = {};
@@ -38,14 +35,39 @@ async function asyncTasksGetAll(
   return tasks;
 }
 
-export function tasksGetAll(db: firebase.firestore.Firestore, userId: string) {
+async function asyncTaskAdd(task: ITaskItem): Promise<{ [id: string]: ITaskItem }> {
+  const batch = db.batch();
+
+  const taskRef = db.collection('tasks').doc(task.taskId);
+  batch.set(taskRef, { ...task });
+
+  const taskDoc = createTaskDoc(task);
+  const taskDocRef = db.collection('taskDocs').doc(task.taskId);
+  batch.set(taskDocRef, { ...taskDoc });
+
+  await batch.commit();
+
+  return { [task.taskId]: task };
+}
+
+async function asyncTaskUpdate(task: ITaskItem): Promise<{ [id: string]: ITaskItem }> {
+  await db.collection('tasks').doc(task.taskId).update(task);
+  return { [task.taskId]: task };
+}
+
+async function asyncTaskRemove(taskId: string): Promise<string> {
+  await db.collection('tasks').doc(taskId).delete();
+  return taskId;
+}
+
+export function tasksGetAll(userId: string) {
   return async (dispatch: (action: TaskGetAllDispatch) => void) => {
     dispatch({
       type: TASKS_GET_ALL_REQUESTED,
     });
 
     try {
-      const payload = await asyncTasksGetAll(db, userId);
+      const payload = await asyncTasksGetAll(userId);
       dispatch({
         type: TASKS_GET_ALL_SUCCEEDED,
         payload,
@@ -59,29 +81,14 @@ export function tasksGetAll(db: firebase.firestore.Firestore, userId: string) {
   };
 }
 
-async function asyncTaskAdd(db: firebase.firestore.Firestore, task: ITaskItem): Promise<{ [id: string]: ITaskItem }> {
-  const batch = db.batch();
-
-  const taskRef = db.collection('tasks').doc(task.taskId);
-  batch.set(taskRef, { ...task });
-
-  const taskDoc = createTaskDoc(task);
-  const taskDocRef = db.collection('taskDocs').doc(task.taskId);
-  batch.set(taskDocRef, { ...taskDoc });
-
-  await batch.commit();
-  
-  return { [task.taskId]: task };
-}
-
-export function taskAdd(db: firebase.firestore.Firestore, task: ITaskItem) {
+export function taskAdd(task: ITaskItem) {
   return async (dispatch: (action: TaskAddDispatch) => void) => {
     dispatch({
       type: TASK_ADD_REQUESTED,
     });
 
     try {
-      const payload = await asyncTaskAdd(db, task);
+      const payload = await asyncTaskAdd(task);
       dispatch({
         type: TASK_ADD_SUCCEEDED,
         payload,
@@ -95,19 +102,14 @@ export function taskAdd(db: firebase.firestore.Firestore, task: ITaskItem) {
   };
 }
 
-async function asyncTaskUpdate(db: firebase.firestore.Firestore, task: ITaskItem): Promise<{ [id: string]: ITaskItem }> {
-  await db.collection('tasks').doc(task.taskId).update(task);
-  return { [task.taskId]: task };
-}
-
-export function taskUpdate(db: firebase.firestore.Firestore, task: ITaskItem) {
+export function taskUpdate(task: ITaskItem) {
   return async (dispatch: (action: TaskUpdateDispatch) => void) => {
     dispatch({
       type: TASK_UPDATE_REQUESTED,
     });
 
     try {
-      const payload = await asyncTaskUpdate(db, task);
+      const payload = await asyncTaskUpdate(task);
       dispatch({
         type: TASK_UPDATE_SUCCEEDED,
         payload,
@@ -121,19 +123,14 @@ export function taskUpdate(db: firebase.firestore.Firestore, task: ITaskItem) {
   };
 }
 
-async function asyncTaskRemove(db: firebase.firestore.Firestore, taskId: string): Promise<string> {
-  await db.collection('tasks').doc(taskId).delete();
-  return taskId;
-}
-
-export function taskRemove(db: firebase.firestore.Firestore, taskId: string) {
+export function taskRemove(taskId: string) {
   return async (dispatch: (action: TaskRemoveDispatch) => void) => {
     dispatch({
       type: TASK_REMOVE_REQUESTED,
     });
 
     try {
-      const payload = await asyncTaskRemove(db, taskId);
+      const payload = await asyncTaskRemove(taskId);
       dispatch({
         type: TASK_REMOVE_SUCCEEDED,
         payload,

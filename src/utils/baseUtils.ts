@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import firebase from '../../config/firebase';
-import { IThemeMode, ApiXferStatus } from '../types/baseTypes';
+import { IThemeMode, ApiXferStatus, SidebarVisibility } from '../types/baseTypes';
 import { ITaskItem } from '../types/taskTypes';
 import { TaskDoc } from '../types/taskDocTypes';
 
@@ -79,6 +79,13 @@ export function initLocalTheme(storage: Storage): IThemeMode {
   setLocalTheme(storage, themeMode);
   return themeMode;
 }
+
+export function initSidebarVisibility(): SidebarVisibility {
+  document.body.classList.remove('sidebar-hidden');
+  document.body.classList.add('sidebar-visible');
+  return 'sidebar-visible';
+}
+
 
 export function apiXferInit(): ApiXferStatus {
   return {

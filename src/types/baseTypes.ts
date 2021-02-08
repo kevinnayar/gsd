@@ -4,8 +4,7 @@ import { TaskMap, TasksDispatch } from './taskTypes';
 import { TaskDocMap, TaskDocDispatch } from './taskDocTypes';
 
 export type IThemeMode = 'light-mode' | 'dark-mode';
-
-export type ColumnId = 'incomplete' | 'complete';
+export type SidebarVisibility = 'sidebar-visible' | 'sidebar-hidden';
 
 export type ApiXferStatus = {
   requested: boolean;
@@ -25,9 +24,7 @@ export type AuthReducer = {
   authLogoutXferStatus: ApiXferStatus;
   authSignupXferStatus: ApiXferStatus;
   userDef: null | UserDef;
-  db: firebase.firestore.Firestore;
-  auth: firebase.auth.Auth;
-  redirectPathname: null | string;
+  redirectPathname: string;
 };
 
 export type TasksReducer = {

@@ -61,18 +61,32 @@ body.light-mode {
   $color-bg: rgb(255, 255, 255);
   $color-text: lighten(rgb(30, 30, 30), 30%);
   $color-border: darken($color-bg, 10%);
+
   // styles
   background: $color-bg;
   color: $color-text;
-  @import 'base.scss';
+
+  // imports
+  @import '../../component-core/Sidebar/sidebar.scss';
+  @import '../../component-core/Logo/logo.scss';
+  @import '../../component-core/ThemeSwitch/theme-switch.scss';
+  @import '../../component-core/Icon/icon.scss';
+  @import '../../component-core/SidebarToggle/sidebar-toggle.scss';
 }
 
 body.dark-mode {
   $color-bg: rgb(30, 30, 30);
   $color-text: darken(rgb(255, 255, 255), 30%);
   $color-border: lighten($color-bg, 10%);
+
   // styles
   background: $color-bg;
   color: $color-text;
-  @import 'base.scss';
+  
+  // imports
+  @import '../../component-core/Sidebar/sidebar.scss';
+  @import '../../component-core/Logo/logo.scss';
+  @import '../../component-core/ThemeSwitch/theme-switch.scss';
+  @import '../../component-core/Icon/icon.scss';
+  @import '../../component-core/SidebarToggle/sidebar-toggle.scss';
 }

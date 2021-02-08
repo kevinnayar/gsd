@@ -6,7 +6,7 @@ import { RouteComponentProps } from 'react-router';
 import { AuthenticatedLinks } from '../components/AuthenticatedLinks/AuthenticatedLinks';
 import { TaskDocEditor } from '../components/TaskDocEditor/TaskDocEditor';
 
-import { authSetRedirectPathname } from '../store/auth/authActions';
+import { authSetRedirect } from '../store/auth/authActions';
 import { tasksGetAll } from '../store/tasks/tasksActions';
 import { taskDocGet } from '../store/taskDocs/taskDocsActions';
 import { AppReducer } from '../types/baseTypes';
@@ -24,7 +24,7 @@ export default function MainPage(props: RouteComponentProps) {
   const [taskDoc, setTaskDoc] = useState(null);
 
   useEffect(() => {
-    if (userDef && redirectPathname) dispatch(authSetRedirectPathname(null));
+    if (userDef && redirectPathname) dispatch(authSetRedirect(null));
   }, [userDef]);
 
   useEffect(() => {

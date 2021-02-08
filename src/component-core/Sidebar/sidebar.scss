@@ -1,0 +1,25 @@
+.app__sidebar {
+  position: fixed;
+  width: 28%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  background: $color-blue;
+  transition: $hover-transition;
+  left: 0;
+  top: 0;
+}
+
+body.sidebar-hidden {
+  .app__sidebar {
+    margin-left: -28%;
+  }
+}
+
+body.sidebar-visible {
+  .app__sidebar {
+    margin-left: 0%;
+  }
+}

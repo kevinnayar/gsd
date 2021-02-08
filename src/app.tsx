@@ -12,7 +12,7 @@ import LoginPageContainer from './containers/LoginPageContainer';
 import SignupPageContainer from './containers/SignupPageContainer';
 import MainPageContainer from './containers/MainPageContainer';
 
-import { authCheck, authSetRedirectPathname } from './store/auth/authActions';
+import { authCheck, authSetRedirect } from './store/auth/authActions';
 import { AppReducer } from './types/baseTypes';
 
 const PUBLIC_ROUTES = ['/login', '/signup'];
@@ -27,7 +27,7 @@ const PrivateRoutes = ({ children, ...rest }) => {
   }, []);
 
   if (!userDef && redirectPathname === null && !PUBLIC_ROUTES.includes(location.pathname)) {
-    dispatch(authSetRedirectPathname(location.pathname));
+    dispatch(authSetRedirect(location.pathname));
   }
 
   return <Route {...rest} render={() => userDef ? children : <Redirect to="/login" />} />;

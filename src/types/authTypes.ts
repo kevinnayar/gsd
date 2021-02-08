@@ -17,7 +17,26 @@ export const AUTH_SIGNUP_REQUESTED = 'AUTH_SIGNUP_REQUESTED';
 export const AUTH_SIGNUP_SUCCEEDED = 'AUTH_SIGNUP_SUCCEEDED';
 export const AUTH_SIGNUP_FAILED = 'AUTH_SIGNUP_FAILED';
 
-export const AUTH_SET_REDIRECT_PATHNAME = 'AUTH_SET_REDIRECT_PATHNAME';
+export const AUTH_SET_REDIRECT = 'AUTH_SET_REDIRECT';
+
+export type InternalUserCredentials = {
+  email: string;
+  password: string;
+};
+
+export type UserDefPartial = {
+  email: string;
+  fullName: string;
+  displayName: string;
+  type: 'user';
+  roleType: 'basic' | 'premium' | 'super';
+};
+
+export type UserDef = UserDefPartial & {
+  userId: string;
+  createdAt: firebase.firestore.Timestamp;
+  // acceptedTerms: boolean;
+};
 
 export type AuthCheckDispatch = BaseDispatch & {
   type:
@@ -45,8 +64,8 @@ export type AuthSignupDispatch = BaseDispatch & {
     | typeof AUTH_SIGNUP_FAILED;
 };
 
-export type AuthRedirectPathnameDispatch = BaseDispatch & {
-  type: typeof AUTH_SET_REDIRECT_PATHNAME
+export type AuthRedirectDispatch = BaseDispatch & {
+  type: typeof AUTH_SET_REDIRECT
 };
 
 export type AuthDispatch =
@@ -54,22 +73,5 @@ export type AuthDispatch =
   | AuthLoginDispatch
   | AuthLogoutDispatch
   | AuthSignupDispatch
-  | AuthRedirectPathnameDispatch;
+  | AuthRedirectDispatch;
 
-export type InternalUserCredentials = {
-  email: string;
-  password: string;
-};
-
-export type UserDefPartial = {
-  email: string;
-  fullName: string;
-  displayName: string;
-  type: 'user';
-  roleType: 'basic' | 'premium' | 'super';
-};
-
-export type UserDef = UserDefPartial & {
-  userId: string;
-  createdAt: firebase.firestore.Timestamp;
-};

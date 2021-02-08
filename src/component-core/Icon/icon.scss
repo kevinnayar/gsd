@@ -1,0 +1,15 @@
+.icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: $hover-transition;
+
+  &:hover {
+    background-color: $color-border;
+  }
+}

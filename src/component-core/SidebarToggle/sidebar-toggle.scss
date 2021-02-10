@@ -4,8 +4,10 @@
     left: 32px;
     top: 32px;
   }
+}
 
-  &--sidebar-hidden {
+&.sidebar--visible {
+  .sidebar-toggle {
     .icon--sidebar-toggle {
       color: $color-white;
 
@@ -15,5 +17,18 @@
     }
   }
 }
+
+&.sidebar--hidden {
+  .sidebar-toggle {
+    .icon--sidebar-toggle {
+      color: $color-text;
+
+      &:hover {
+        background-color: $color-border;
+      }
+    }
+  }
+}
+
 
 

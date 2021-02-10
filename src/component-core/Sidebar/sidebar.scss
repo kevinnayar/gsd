@@ -12,13 +12,13 @@
   top: 0;
 }
 
-body.sidebar-hidden {
+&.sidebar--hidden {
   .app__sidebar {
     margin-left: -28%;
   }
 }
 
-body.sidebar-visible {
+&.sidebar--visible {
   .app__sidebar {
     margin-left: 0%;
   }

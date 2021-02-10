@@ -1,0 +1,21 @@
+.app__content {
+  display: flex;
+  margin: 0;
+  padding: 200px 0;
+  height: auto;
+  min-height: 100%;
+  transition: $hover-transition;
+}
+
+&.sidebar--hidden {
+  .app__content {
+    width: 40%;
+    margin: 0 30%;
+  }
+}
+
+&.sidebar--visible {
+  .app__content {
+    margin: 0 16% 0 44%;
+  }
+}

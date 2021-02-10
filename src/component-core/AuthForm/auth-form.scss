@@ -1,0 +1,115 @@
+.auth-form {
+  background: $color-bg;
+  border: 1px solid $color-border;
+  width: 20%;
+  margin: 0 auto;
+  padding: 1.5%;
+  border-radius: 4px;
+  align-self: center;
+  position: fixed;
+  left: 4%;
+  top: 205px;
+
+  &__nav-links {
+    display: flex;
+    margin: 0 auto 36px;
+    align-items: center;
+    justify-content: center;
+    font-family: $font-header;
+    font-weight: 700;
+
+    a {
+      align-items: center;
+      display: flex;
+      margin: 0 0.67em;
+      padding: 12px 22px;
+      color: $color-text;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: $hover-transition;
+
+      &:hover {
+        color: $color-white;
+        background: lighten($color-blue, 10%);
+      }
+
+      &.active {
+        color: $color-blue;
+
+        &:hover {
+          color: $color-white;
+          background: lighten($color-blue, 10%);
+        }
+      }
+    }
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    font-size: 80%;
+    color: red;
+  }
+
+  form {
+    div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 0.83em;
+      margin-bottom: 0.25em;
+    }
+
+    input {
+      width: 100%;
+      height: 40px;
+      margin-bottom: 0.83em;
+      padding: 4px 8px;
+      border: none;
+      outline: none;
+      font-size: 1em;
+      background: transparent;
+      color: $color-text;
+      transition: $hover-transition;
+      background: $color-border;
+
+      &:focus {
+        background: lighten($color-border, 5%);
+      }
+    }
+
+    .btn {
+      margin-top: 1.66em;
+      height: 50px;
+      border: none;
+      outline: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: $color-blue;
+      color: $color-white;
+      font-family: $font-header;
+      font-weight: 700;
+      transition: $hover-transition;
+
+      &:hover {
+        background: lighten($color-blue, 10%);
+      }
+
+      &--disabled {
+        color: lighten($color-blue, 30%);
+        background: lighten($color-blue, 20%);
+        cursor: not-allowed;
+
+        &:hover {
+          color: lighten($color-blue, 30%);
+          background: lighten($color-blue, 20%);
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}

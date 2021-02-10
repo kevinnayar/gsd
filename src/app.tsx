@@ -1,37 +1,60 @@
 import * as React from 'react';
 import { useEffect } from 'react';
-import { Router, Route } from 'react-router';
+import { Router, Route, RouteComponentProps } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { createBrowserHistory, History } from 'history';
 import { Redirect, useLocation } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import store from './store';
-import BasePageContainer from './containers/BasePageContainer';
-import LoginPageContainer from './containers/LoginPageContainer';
-import SignupPageContainer from './containers/SignupPageContainer';
-import MainPageContainer from './containers/MainPageContainer';
-
 import { authCheck, authSetRedirect } from './store/auth/authActions';
 import { AppReducer } from './types/baseTypes';
 
+import PublicPage from './pages/PublicPages';
+import PrivatePage from './pages/PrivatePage';
+import { FormLogin } from './component-core/AuthForm/FormLogin';
+import { FormSignup } from './component-core/AuthForm/FormSignup';
+
 const PUBLIC_ROUTES = ['/login', '/signup'];
 
-const PrivateRoutes = ({ children, ...rest }) => {  
-  const { db, auth, userDef, redirectPathname } = useSelector((state: AppReducer) => state.auth);
+const PublicRoute = ({ component: Component, ...rest }) => {  
+  const { userDef, redirectPathname } = useSelector((state: AppReducer) => state.auth);
+
+  if (userDef) {
+    const pathname = PUBLIC_ROUTES.includes(redirectPathname) ? '/tasks' : redirectPathname;
+    return <Redirect to={pathname} />;
+  }
+
+  return (
+    <Route {...rest} render={(props) => <PublicPage><Component {...props} /></PublicPage>} />
+  );
+};
+
+const PrivateRoute = ({ component: Component, ...rest }) => {  
+  const { userDef } = useSelector((state: AppReducer) => state.auth);
+
   const dispatch = useDispatch();
   const location = useLocation();
 
   useEffect(() => {
-    dispatch(authCheck(db, auth));
+    dispatch(authCheck());
+    if (!userDef) dispatch(authSetRedirect(location.pathname));
   }, []);
 
-  if (!userDef && redirectPathname === null && !PUBLIC_ROUTES.includes(location.pathname)) {
-    dispatch(authSetRedirect(location.pathname));
-  }
+  if (!userDef) return <Redirect to="/login" />;
 
-  return <Route {...rest} render={() => userDef ? children : <Redirect to="/login" />} />;
+  return (
+    <Route {...rest} render={(props) => <PrivatePage><Component {...props} /></PrivatePage>} />
+  );
 };
+
+const PrivateOne = React.memo((props: RouteComponentProps) => {
+  return <div><p>private one</p></div>;
+});
+
+const PrivateTwo = React.memo((props: RouteComponentProps) => {
+  return <div><p>private two</p></div>;
+});
 
 const history: History<any> = createBrowserHistory();
 
@@ -39,16 +62,10 @@ function App() {
   return (
     <Provider store={store}>
       <Router history={history}>
-        <BasePageContainer>
-          <Route exact path="/login" component={LoginPageContainer} />
-          <Route exact path="/signup" component={SignupPageContainer} />
-          {/* <PrivateRoute exact path="/tasks" component={MainPageContainer} />
-          <PrivateRoute exact path="/tasks/:id" component={MainPageContainer} /> */}
-          <PrivateRoutes>
-            <Route exact path="/tasks" component={MainPageContainer} />
-            <Route exact path="/tasks/:id" component={MainPageContainer} />
-          </PrivateRoutes>
-        </BasePageContainer>
+        <PublicRoute exact path="/login" component={FormLogin} />
+        <PublicRoute exact path="/signup" component={FormSignup} />
+        <PrivateRoute exact path="/tasks" component={PrivateOne} />
+        <PrivateRoute exact path="/tasks/:taskId" component={PrivateTwo} />
       </Router>
     </Provider>
   );

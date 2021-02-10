@@ -7,7 +7,7 @@ export function ThemeSwitch() {
   const [theme, setTheme] = useState<IThemeMode>(initLocalTheme(window.localStorage));
 
   const handleOnChange = (e: any) => {
-    const newTheme = theme === 'light-mode' ? 'dark-mode' : 'light-mode';
+    const newTheme = theme === 'mode--light' ? 'mode--dark' : 'mode--light';
     document.body.classList.remove(theme);
     document.body.classList.add(newTheme);
     setTheme(newTheme);

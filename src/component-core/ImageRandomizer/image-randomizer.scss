@@ -1,0 +1,28 @@
+.image-randomizer {
+  position: fixed;
+  top: 0;
+  height: 100%;
+  left: 28%;
+  width: 72%;
+  background-size: cover;
+
+  &__attribution {
+    position: fixed;
+    right: 32px;
+    bottom: 32px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    color: $color-text;
+    background: $color-bg;
+
+    a {
+      color: $color-blue;
+      transition: $hover-transition;
+
+      &:hover {
+        color: lighten($color-blue, 10%);
+      }
+    }
+  }
+}
+

@@ -57,7 +57,7 @@ p, ul li {
   font-size: 1.3em;
 }
 
-body.light-mode {
+body.mode--light {
   $color-bg: rgb(255, 255, 255);
   $color-text: lighten(rgb(30, 30, 30), 30%);
   $color-border: darken($color-bg, 10%);
@@ -72,9 +72,12 @@ body.light-mode {
   @import '../../component-core/ThemeSwitch/theme-switch.scss';
   @import '../../component-core/Icon/icon.scss';
   @import '../../component-core/SidebarToggle/sidebar-toggle.scss';
+  @import '../../component-core/Content/content.scss';
+  @import '../../component-core/AuthForm/auth-form.scss';
+  @import '../../component-core/ImageRandomizer/image-randomizer.scss';
 }
 
-body.dark-mode {
+body.mode--dark {
   $color-bg: rgb(30, 30, 30);
   $color-text: darken(rgb(255, 255, 255), 30%);
   $color-border: lighten($color-bg, 10%);
@@ -89,4 +92,8 @@ body.dark-mode {
   @import '../../component-core/ThemeSwitch/theme-switch.scss';
   @import '../../component-core/Icon/icon.scss';
   @import '../../component-core/SidebarToggle/sidebar-toggle.scss';
+  @import '../../component-core/Content/content.scss';
+  @import '../../component-core/AuthForm/auth-form.scss';
+  @import '../../component-core/ImageRandomizer/image-randomizer.scss';
+
 }

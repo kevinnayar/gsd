@@ -3,8 +3,7 @@ import { UserDef, AuthDispatch } from './authTypes';
 import { TaskMap, TasksDispatch } from './taskTypes';
 import { TaskDocMap, TaskDocDispatch } from './taskDocTypes';
 
-export type IThemeMode = 'light-mode' | 'dark-mode';
-export type SidebarVisibility = 'sidebar-visible' | 'sidebar-hidden';
+export type IThemeMode = 'mode--light' | 'mode--dark';
 
 export type ApiXferStatus = {
   requested: boolean;

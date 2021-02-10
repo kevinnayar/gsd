@@ -7,9 +7,8 @@ export const ThemeSwitch = React.memo(() => {
   const [theme, setTheme] = useState<IThemeMode>(initLocalTheme(window.localStorage));
 
   const handleOnChange = () => {
-    const newTheme = theme === 'light-mode' ? 'dark-mode' : 'light-mode';
-    document.body.classList.remove(theme);
-    document.body.classList.add(newTheme);
+    const newTheme = theme === 'mode--light' ? 'mode--dark' : 'mode--light';
+    document.body.classList.replace(theme, newTheme);
     setTheme(newTheme);
     setLocalTheme(window.localStorage, newTheme);
   }

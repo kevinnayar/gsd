@@ -111,7 +111,7 @@
     }
   }
 
-  &--dark-mode {
+  &--mode--dark {
     .theme-switch__slider {
       background-color: darken($color-blue, 20%);
 

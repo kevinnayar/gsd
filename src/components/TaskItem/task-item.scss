@@ -1,0 +1,57 @@
+.task-item {
+  height: 64px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.165);
+  background: $color-blue;
+  cursor: pointer;
+  transition: $hover-transition;
+
+  &:hover {
+    background: lighten($color-blue, 5%);
+  }
+
+  &--active {
+    background: lighten($color-blue, 5%);
+  }
+
+  &__name {
+    width: 100%;
+    margin: 0 6px 0 18px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 1em;
+    background: transparent;
+    color: $color-white;
+  }
+
+  &--complete {
+    .task-item__name {
+      text-decoration: line-through;
+      color: rgba(255, 255, 255, 0.67);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    margin-right: 18px;
+
+    .icon {
+      color: $color-white;
+      height: 32px;
+      width: 32px;
+      margin-left: 0.165sem;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.165);
+      }
+
+      i {
+        font-size: 18px;
+      }
+    }
+  }
+}
+

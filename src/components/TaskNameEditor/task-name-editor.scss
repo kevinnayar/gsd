@@ -1,0 +1,16 @@
+.task-name-editor {
+  background: transparent;
+  outline: none;
+  border: none;
+  color: $color-text;
+  font-weight: bold;
+  font-size: 3.2em;
+  outline-offset: 0;
+  font-family: $font-body;
+
+  &:focus {
+    background: transparent;
+    outline: none;
+    border: none;
+  }
+}

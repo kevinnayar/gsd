@@ -3,13 +3,12 @@ import { useState } from 'react';
 import { initLocalTheme, setLocalTheme } from '../../utils/baseUtils';
 import { IThemeMode } from '../../types/baseTypes';
 
-export function ThemeSwitch() {
+export const ThemeSwitch = React.memo(() => {
   const [theme, setTheme] = useState<IThemeMode>(initLocalTheme(window.localStorage));
 
-  const handleOnChange = (e: any) => {
+  const handleOnChange = () => {
     const newTheme = theme === 'mode--light' ? 'mode--dark' : 'mode--light';
-    document.body.classList.remove(theme);
-    document.body.classList.add(newTheme);
+    document.body.classList.replace(theme, newTheme);
     setTheme(newTheme);
     setLocalTheme(window.localStorage, newTheme);
   }
@@ -22,6 +21,6 @@ export function ThemeSwitch() {
       </label>
     </div>
   );
-}
+});
 
 

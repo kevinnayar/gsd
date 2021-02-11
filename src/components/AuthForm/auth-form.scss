@@ -17,11 +17,12 @@
     justify-content: center;
     font-family: $font-header;
     font-weight: 700;
+    border-bottom: 1px solid $color-border;
 
     a {
       align-items: center;
       display: flex;
-      margin: 0 0.67em;
+      margin: 0 0.67em 1.33em;
       padding: 12px 22px;
       color: $color-text;
       cursor: pointer;

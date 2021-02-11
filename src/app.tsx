@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect } from 'react';
-import { Router, Route, RouteComponentProps } from 'react-router';
+import { Router, Route } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { createBrowserHistory, History } from 'history';
 import { Redirect, useLocation } from 'react-router-dom';
@@ -10,12 +10,11 @@ import store from './store';
 import { authCheck, authSetRedirect } from './store/auth/authActions';
 import { AppReducer } from './types/baseTypes';
 
-import PublicPage from './pages/PublicPages';
-import PrivatePage from './pages/PrivatePage';
-import { FormLogin } from './component-core/AuthForm/FormLogin';
-import { FormSignup } from './component-core/AuthForm/FormSignup';
+import AuthLoginPage from './pages/AuthLoginPage';
+import AuthSignupPage from './pages/AuthSignupPage';
+import TasksPage from './pages/TasksPage';
 
-const PUBLIC_ROUTES = ['/login', '/signup'];
+const PUBLIC_ROUTES = ['', '/', '/login', '/signup'];
 
 const PublicRoute = ({ component: Component, ...rest }) => {  
   const { userDef, redirectPathname } = useSelector((state: AppReducer) => state.auth);
@@ -25,9 +24,7 @@ const PublicRoute = ({ component: Component, ...rest }) => {
     return <Redirect to={pathname} />;
   }
 
-  return (
-    <Route {...rest} render={(props) => <PublicPage><Component {...props} /></PublicPage>} />
-  );
+  return <Route {...rest} render={(props) => <Component {...props} />} />;
 };
 
 const PrivateRoute = ({ component: Component, ...rest }) => {  
@@ -43,18 +40,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   if (!userDef) return <Redirect to="/login" />;
 
-  return (
-    <Route {...rest} render={(props) => <PrivatePage><Component {...props} /></PrivatePage>} />
-  );
+  return <Route {...rest} render={(props) => <Component {...props} />} />;
 };
-
-const PrivateOne = React.memo((props: RouteComponentProps) => {
-  return <div><p>private one</p></div>;
-});
-
-const PrivateTwo = React.memo((props: RouteComponentProps) => {
-  return <div><p>private two</p></div>;
-});
 
 const history: History<any> = createBrowserHistory();
 
@@ -62,10 +49,10 @@ function App() {
   return (
     <Provider store={store}>
       <Router history={history}>
-        <PublicRoute exact path="/login" component={FormLogin} />
-        <PublicRoute exact path="/signup" component={FormSignup} />
-        <PrivateRoute exact path="/tasks" component={PrivateOne} />
-        <PrivateRoute exact path="/tasks/:taskId" component={PrivateTwo} />
+        <PublicRoute exact path="/login" component={AuthLoginPage} />
+        <PublicRoute exact path="/signup" component={AuthSignupPage} />
+        <PrivateRoute exact path="/tasks" component={TasksPage} />
+        <PrivateRoute exact path="/tasks/:taskId" component={TasksPage} />
       </Router>
     </Provider>
   );

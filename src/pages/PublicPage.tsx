@@ -1,27 +1,23 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { Sidebar } from '../components/Sidebar/Sidebar';
-import { Content } from '../components/Content/Content';
 import { Logo } from '../components/Logo/Logo';
 import { ThemeSwitch } from '../components/ThemeSwitch/ThemeSwitch';
 import { SidebarToggle } from '../components/SidebarToggle/SidebarToggle';
-import { AuthedLinks } from '../components/AuthedLinks/AuthedLinks';
+import { ImageRandomizer } from '../components/ImageRandomizer/ImageRandomizer';
 
-const PrivatePage = (props: { sidebarComponent: any, contentComponent: any }) => {
+const PublicPage = React.memo((props: { children: any }) => {
   return (
     <div className="app">
       <Sidebar>
         <Logo />
         <ThemeSwitch />
         <SidebarToggle />
-        {props.sidebarComponent}
+        {props.children}
       </Sidebar>
-      <Content>
-        <AuthedLinks />
-        {props.contentComponent}
-      </Content>
+      <ImageRandomizer />
     </div>
   );
-};
+});
 
-export default PrivatePage;
+export default PublicPage;

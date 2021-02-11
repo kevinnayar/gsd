@@ -1,0 +1,11 @@
+.authed-links {
+  position: fixed;
+  right: 32px;
+  top: 32px;
+  display: flex;
+
+  &__link {
+    margin-left: 0.5em;
+  }
+}
+

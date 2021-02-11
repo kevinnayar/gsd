@@ -1,4 +1,4 @@
-import firebase, { auth, db } from '../../../config/firebase';
+import { db } from '../../../config/firebase';
 import { createTaskDoc } from '../../utils/baseUtils';
 import {
   ITaskItem,
@@ -56,7 +56,15 @@ async function asyncTaskUpdate(task: ITaskItem): Promise<{ [id: string]: ITaskIt
 }
 
 async function asyncTaskRemove(taskId: string): Promise<string> {
-  await db.collection('tasks').doc(taskId).delete();
+  const batch = db.batch();
+
+  const taskRef = db.collection('tasks').doc(taskId);
+  batch.delete(taskRef);
+
+  const taskDocRef = db.collection('taskDocs').doc(taskId);
+  batch.delete(taskDocRef);
+
+  await batch.commit();
   return taskId;
 }
 

@@ -6,11 +6,11 @@ type IconProps = {
   onClick?: (...args: any[]) => void;
 };
 
-export function Icon(props: IconProps) {
+export const Icon = React.memo((props: IconProps) => {
   return (
     <div className={`icon icon--${props.className}`} onClick={props.onClick}>
       <i className="material-icons">{props.iconName}</i>
     </div>
   );
-}
+});
 

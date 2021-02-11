@@ -1,4 +1,4 @@
-import firebase from '../../../config/firebase';
+import firebase, { auth, db } from '../../../config/firebase';
 import {
   TaskDoc,
   TaskDocMap,
@@ -20,7 +20,7 @@ import {
   TASKDOC_REMOVE_FAILED,
 } from '../../types/taskDocTypes';
 
-async function asyncTaskDocGet(db: firebase.firestore.Firestore, taskId: string) {
+async function asyncTaskDocGet(taskId: string) {
   const taskDocRef = db.collection('taskDocs').doc(taskId).get();
   const taskDocPromise: Promise<TaskDocMap> = taskDocRef.then((doc) => {
     if (doc.exists) {
@@ -34,14 +34,29 @@ async function asyncTaskDocGet(db: firebase.firestore.Firestore, taskId: string)
   return taskDocResult;
 }
 
-export function taskDocGet(db: firebase.firestore.Firestore, taskId: string) {
+async function asyncTaskDocAdd(taskDoc: TaskDoc): Promise<{ [id: string]: TaskDoc }> {
+  await db.collection('taskDocs').doc(taskDoc.taskId).set(taskDoc);
+  return { [taskDoc.taskId]: taskDoc };
+}
+
+async function asyncTaskDocUpdate(taskId: string, blob: string): Promise<{ [id: string]: TaskDoc }> {
+  await db.collection('taskDocs').doc(taskId).update({ blob });
+  return asyncTaskDocGet(taskId);
+}
+
+async function asyncTaskDocRemove(taskId: string): Promise<string> {
+  await db.collection('taskDocs').doc(taskId).delete();
+  return taskId;
+}
+
+export function taskDocGet(taskId: string) {
   return async (dispatch: (action: TaskDocGetDispatch) => void) => {
     dispatch({
       type: TASKDOC_GET_REQUESTED,
     });
 
     try {
-      const payload = await asyncTaskDocGet(db, taskId);
+      const payload = await asyncTaskDocGet(taskId);
       dispatch({
         type: TASKDOC_GET_SUCCEEDED,
         payload,
@@ -55,19 +70,14 @@ export function taskDocGet(db: firebase.firestore.Firestore, taskId: string) {
   };
 }
 
-async function asyncTaskDocAdd(db: firebase.firestore.Firestore, taskDoc: TaskDoc): Promise<{ [id: string]: TaskDoc }> {
-  await db.collection('taskDocs').doc(taskDoc.taskId).set(taskDoc);
-  return { [taskDoc.taskId]: taskDoc };
-}
-
-export function taskDocAdd(db: firebase.firestore.Firestore, taskDoc: TaskDoc) {
+export function taskDocAdd(taskDoc: TaskDoc) {
   return async (dispatch: (action: TaskDocAddDispatch) => void) => {
     dispatch({
       type: TASKDOC_ADD_REQUESTED,
     });
 
     try {
-      const payload = await asyncTaskDocAdd(db, taskDoc);
+      const payload = await asyncTaskDocAdd(taskDoc);
       dispatch({
         type: TASKDOC_ADD_SUCCEEDED,
         payload,
@@ -81,22 +91,14 @@ export function taskDocAdd(db: firebase.firestore.Firestore, taskDoc: TaskDoc) {
   };
 }
 
-async function asyncTaskDocUpdate(
-  db: firebase.firestore.Firestore,
-  taskDoc: TaskDoc,
-): Promise<{ [id: string]: TaskDoc }> {
-  await db.collection('taskDocs').doc(taskDoc.taskId).update(taskDoc);
-  return { [taskDoc.taskId]: taskDoc };
-}
-
-export function taskDocUpdate(db: firebase.firestore.Firestore, taskDoc: TaskDoc) {
+export function taskDocUpdate(taskId: string, blob: string) {
   return async (dispatch: (action: TaskDocUpdateDispatch) => void) => {
     dispatch({
       type: TASKDOC_UPDATE_REQUESTED,
     });
 
     try {
-      const payload = await asyncTaskDocUpdate(db, taskDoc);
+      const payload = await asyncTaskDocUpdate(taskId, blob);
       dispatch({
         type: TASKDOC_UPDATE_SUCCEEDED,
         payload,
@@ -110,19 +112,14 @@ export function taskDocUpdate(db: firebase.firestore.Firestore, taskDoc: TaskDoc
   };
 }
 
-async function asyncTaskDocRemove(db: firebase.firestore.Firestore, taskId: string): Promise<string> {
-  await db.collection('taskDocs').doc(taskId).delete();
-  return taskId;
-}
-
-export function taskRemove(db: firebase.firestore.Firestore, taskId: string) {
+export function taskRemove(taskId: string) {
   return async (dispatch: (action: TaskDocRemoveDispatch) => void) => {
     dispatch({
       type: TASKDOC_REMOVE_REQUESTED,
     });
 
     try {
-      const payload = await asyncTaskDocRemove(db, taskId);
+      const payload = await asyncTaskDocRemove(taskId);
       dispatch({
         type: TASKDOC_REMOVE_SUCCEEDED,
         payload,

@@ -4,12 +4,43 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 
 import PrivatePage from './PrivatePage';
+import { Loader } from '../components/Loader/Loader';
 import { TaskList } from '../components/TaskList/TaskList';
 import { TaskNameEditor } from '../components/TaskNameEditor/TaskNameEditor';
 import { TaskDocEditor } from '../components/TaskDocEditor/TaskDocEditor';
+import { NoneTaskEditor } from '../components/NoneTaskEditor/NoneTaskEditor';
+
 import { tasksGetAll } from '../store/tasks/tasksActions';
 import { taskDocGet } from '../store/taskDocs/taskDocsActions';
+import { ITaskItem, TaskMap } from '../types/taskTypes';
+import { TaskDoc } from '../types/taskDocTypes';
 import { AppReducer } from '../types/baseTypes';
+
+type TasksContentProps = {
+  taskMap: null | TaskMap;
+  task: null | ITaskItem;
+  taskDoc: null | TaskDoc;
+};
+
+const TasksContentComponent = (props: TasksContentProps) => {
+  const { taskMap, task, taskDoc } = props;
+
+  if (taskMap && !Object.keys(taskMap).length) return <NoneTaskEditor hasTasks={false} />;
+
+  if (taskMap && Object.keys(taskMap).length && !task) return <NoneTaskEditor hasTasks={true} />;
+
+  if (task && taskDoc) {
+    return (
+      <div className="task-editor">
+        <TaskNameEditor task={task} />
+        <TaskDocEditor taskId={taskDoc.taskId} blob={taskDoc.blob} key={taskDoc.taskId} />
+      </div>
+    );
+  }
+
+  return <Loader />;
+};
+
 
 const TasksPage = () => {
   const dispatch = useDispatch();
@@ -21,8 +52,8 @@ const TasksPage = () => {
 
   // @ts-ignore
   const taskId: void | string = params.taskId !== undefined ? params.taskId : undefined;
-  const [task, setTask] = useState(null);
-  const [taskDoc, setTaskDoc] = useState(null);
+  const [task, setTask] = useState<null | ITaskItem>(null);
+  const [taskDoc, setTaskDoc] = useState<null | TaskDoc>(null);
   
   useEffect(() => {
     if (userDef) {
@@ -43,18 +74,12 @@ const TasksPage = () => {
     }
   }, [blobs]);
 
-
-  const sidebarComponent = taskMap ? <TaskList taskMap={taskMap} taskId={taskId} /> : null;
-
-  const contentComponent = task && taskDoc
-    ? (
-      <div className="task-editor">
-        <TaskNameEditor task={task} />
-        <TaskDocEditor taskId={taskDoc.taskId} blob={taskDoc.blob} key={taskDoc.taskId} />
-      </div>
-    ) : null;
-
-  return <PrivatePage sidebarComponent={sidebarComponent} contentComponent={contentComponent} />;
+  return (
+    <PrivatePage
+      sidebarComponent={taskMap ? <TaskList taskMap={taskMap} taskId={taskId} /> : null}
+      contentComponent={<TasksContentComponent taskMap={taskMap} task={task} taskDoc={taskDoc} />}
+    />
+  );
 };
 
 export default TasksPage;

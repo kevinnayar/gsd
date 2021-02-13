@@ -67,6 +67,7 @@ body.mode--light {
   color: $color-text;
 
   // imports
+  @import '../../components/Loader/loader.scss';
   @import '../../components/Sidebar/sidebar.scss';
   @import '../../components/Logo/logo.scss';
   @import '../../components/ThemeSwitch/theme-switch.scss';
@@ -80,6 +81,9 @@ body.mode--light {
   @import '../../components/TaskItem/task-item.scss';
   @import '../../components/TaskNameEditor/task-name-editor.scss';
   @import '../../components/TaskDocEditor/task-doc-editor.scss';
+  @import '../../components/NoneTaskItem/none-task-item.scss';
+  @import '../../components/NoneTaskEditor/non-task-editor.scss';
+  @import '../../components/Modal/modal.scss';
 }
 
 body.mode--dark {
@@ -92,6 +96,7 @@ body.mode--dark {
   color: $color-text;
   
   // imports
+  @import '../../components/Loader/loader.scss';
   @import '../../components/Sidebar/sidebar.scss';
   @import '../../components/Logo/logo.scss';
   @import '../../components/ThemeSwitch/theme-switch.scss';
@@ -105,4 +110,7 @@ body.mode--dark {
   @import '../../components/TaskItem/task-item.scss';
   @import '../../components/TaskNameEditor/task-name-editor.scss';
   @import '../../components/TaskDocEditor/task-doc-editor.scss';
+  @import '../../components/NoneTaskItem/none-task-item.scss';
+  @import '../../components/NoneTaskEditor/non-task-editor.scss';
+  @import '../../components/Modal/modal.scss';
 }

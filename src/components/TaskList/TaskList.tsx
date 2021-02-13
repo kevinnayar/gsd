@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TaskItem } from '../TaskItem/TaskItem';
-import { NoTaskItem } from '../../components/NoTaskItem/NoTaskItem';
+import { NoneTaskItem } from '../NoneTaskItem/NoneTaskItem';
 import { TaskMap } from '../../types/taskTypes';
 
 export const TaskList = React.memo((props: { taskMap: TaskMap, taskId: void | string }) => {
@@ -8,11 +8,11 @@ export const TaskList = React.memo((props: { taskMap: TaskMap, taskId: void | st
 
   return (
     <div className="task-list">
-      {!taskIds.length ? <NoTaskItem /> : null}
+      {!taskIds.length ? <NoneTaskItem /> : null}
       {taskIds.map((id) => {
         const task = props.taskMap[id];
         const active = id === props.taskId;
-        return <TaskItem key={id} task={task} active={active} />;
+        return <TaskItem key={id} task={task} taskIds={taskIds} active={active} />;
       })}
     </div>
   );

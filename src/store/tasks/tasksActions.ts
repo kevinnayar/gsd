@@ -23,16 +23,26 @@ import {
 
 async function asyncTasksGetAll(userId: string): Promise<TaskMap> {
   const tasksRef = db.collection('tasks').where('userId', '==', userId);
-  const tasksPromise: Promise<TaskMap> = tasksRef.get().then((tasksSnapshot) => {
-    const taskMap = {};
+  const tasksPromise: Promise<ITaskItem[]> = tasksRef.get().then((tasksSnapshot) => {
+    const tasks = [];
     tasksSnapshot.forEach((doc) => {
       const task = doc.data();
-      taskMap[task.taskId] = task;
+      tasks.push(task);
     });
-    return taskMap;
+    return tasks;
   });
-  const tasks = await tasksPromise;
-  return tasks;
+
+  const taskList = await tasksPromise;
+  taskList.sort((a, b) => {
+    if (a.createdDate.seconds > b.createdDate.seconds) return -1;
+    if (a.createdDate.seconds < b.createdDate.seconds) return 1;
+    return 0;
+  });
+
+  return taskList.reduce((map, t) => {
+    map[t.taskId] = t;
+    return map;
+  }, {});
 }
 
 async function asyncTaskAdd(task: ITaskItem): Promise<{ [id: string]: ITaskItem }> {

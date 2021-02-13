@@ -19,6 +19,10 @@
 }
 
 &.sidebar--hidden {
+  .app__sidebar {
+    z-index: 1000;
+  }
+
   .sidebar-toggle {
     .icon--sidebar-toggle {
       color: $color-text;

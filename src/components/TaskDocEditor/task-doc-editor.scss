@@ -1,3 +1,9 @@
+.task-editor {
+  ul {
+    padding-inline-start: 12px;
+  }
+}
+
 .ck.ck-editor__editable_inline,
 .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
   outline: none;

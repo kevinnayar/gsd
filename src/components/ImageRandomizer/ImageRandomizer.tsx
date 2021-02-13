@@ -9,40 +9,80 @@ type Attribution = {
   webUrl: string,
 };
 
+const imageList: Array<[string, Attribution]> = [
+  [
+    'luis-del-rio-15286',
+    {
+      userName: 'Luis del Río',
+      webUrl: 'https://www.pexels.com/photo/person-walking-between-green-forest-trees-15286/',
+      userUrl: 'https://www.pexels.com/@luisdelrio',
+    },
+  ],
+  [
+    'sam-kolder-2387873',
+    {
+      userName: 'Sam Kolder',
+      webUrl: 'https://www.pexels.com/photo/three-men-standing-near-waterfalls-2387873/',
+      userUrl: 'https://www.pexels.com/@samkolder',
+    },
+  ],
+  [
+    'paul-iJsendoorn-33041',
+    {
+      userName: 'Paul IJsendoorn',
+      webUrl: 'https://www.pexels.com/photo/antelope-canyon-33041/',
+      userUrl: 'https://www.pexels.com/@photospublic',
+    },
+  ],
+
+  [
+    'andy-vu-3244513', 
+    { 
+      userName: 'Andy Vu',
+      webUrl: 'https://www.pexels.com/photo/brown-landscape-under-grey-sky-3244513/',
+      userUrl: 'https://www.pexels.com/@andyhvu',
+    },
+  ],
+
+  [
+    'eberhard-grossgasteiger-572897', 
+    {
+      userName: 'Eberhard Grossgasteiger',
+      webUrl: 'https://www.pexels.com/photo/mountain-covered-snow-under-star-572897/',
+      userUrl: 'https://www.pexels.com/@eberhardgross',
+    },
+  ],
+  [
+    'brady-knoll-5409751', 
+    {
+      userName: 'Brady Knoll',
+      webUrl: 'https://www.pexels.com/photo/white-and-brown-mountain-under-gray-clouds-5409751/',
+      userUrl: 'https://www.pexels.com/@trvlust',
+    },
+  ],
+  [
+    'jaymantri-4827', 
+    {
+      userName: 'Jaymantri',
+      webUrl: 'https://www.pexels.com/photo/nature-forest-trees-fog-4827/',
+      userUrl: 'https://www.pexels.com/@jaymantri',
+    },
+  ],
+  [
+    'pixabay-33109', 
+    {
+      userName: 'Pixabay',
+      webUrl: 'https://www.pexels.com/@pixabay',
+      userUrl: 'https://www.pexels.com/photo/red-leaf-trees-near-the-road-33109/',
+    },
+  ],
+];
+
+
 const ImageText = React.memo((props: { id: string }) => {
-  const imageList: Array<[string, Attribution]> = [
-    [
-      '15286',
-      {
-        userUrl: 'https://www.pexels.com/@luisdelrio',
-        userName: 'Luis del Río',
-        webUrl: 'https://www.pexels.com/photo/person-walking-between-green-forest-trees-15286/'
-      },
-    ],
-    [
-      '2387873',
-      {
-        userUrl: 'https://www.pexels.com/@samkolder',
-        userName: 'Sam Kolder',
-        webUrl: 'https://www.pexels.com/photo/three-men-standing-near-waterfalls-2387873/',
-      },
-    ],
-    [
-      '33041',
-      {
-        userUrl: 'https://www.pexels.com/@photospublic',
-        userName: 'Paul IJsendoorn',
-        webUrl: 'https://www.pexels.com/photo/antelope-canyon-33041/',
-      },
-    ],
-  ];
-
   const match = imageList.find(item => props.id.startsWith(item[0]));
-
   if (!match) return null;
-
   const item = match[1];
-
   return (
     <div className="image-randomizer__attribution">
       Photo by{' '}<strong><a href={item.userUrl} target="_blank">{item.userName}</a></strong>
@@ -54,7 +94,6 @@ const ImageText = React.memo((props: { id: string }) => {
 const images = Object.keys(allImages).map(key => allImages[key]);
 const index = getRandomInt(images.length, true);
 const image = images[index];
-
 
 export const ImageRandomizer = React.memo(() => {
   return (

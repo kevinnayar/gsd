@@ -8,6 +8,8 @@ export const TaskNameEditor = (props: { task: ITaskItem }) => {
   const dispatch = useDispatch();
   const [taskName, setTaskName] = useState(props.task.name);
 
+  const completedSuffix = props.task.completed ? 'completed' : 'incomplete';
+
   useEffect(() => {
     if (props.task.name !== taskName) {
       setTaskName(props.task.name);
@@ -25,11 +27,9 @@ export const TaskNameEditor = (props: { task: ITaskItem }) => {
     dispatch(taskUpdate(task));
   };
 
-  if (!props.task) return null;
-
   return (
     <input
-      className="task-name-editor"
+      className={`task-name-editor task-name-editor--${completedSuffix}`}
       value={taskName}
       onChange={onChangeTaskName}
       onBlur={onBlurTaskName}

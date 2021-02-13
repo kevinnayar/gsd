@@ -45,9 +45,9 @@ export default function reducer(state: TasksReducer = initialState, action: Task
         ...state,
         taskAddXferStatus: apiXferSucceeded(),
         taskMap: {
-          ...state.taskMap,
           ...action.payload,
-        }
+          ...state.taskMap,
+        },
       };
     }
     case TASK_ADD_FAILED:

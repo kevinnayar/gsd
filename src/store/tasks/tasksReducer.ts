@@ -1,4 +1,4 @@
-import { apiXferInit, apiXferRequested, apiXferSucceeded, apiXferFailed } from '../../utils/baseUtils';
+import { apiXferInit, reducerMiddlewareHelper } from '../../utils/baseUtils';
 import {
   TASKS_GET_ALL_REQUESTED,
   TASKS_GET_ALL_SUCCEEDED,
@@ -27,60 +27,64 @@ export const initialState: TasksReducer = {
 export default function reducer(state: TasksReducer = initialState, action: TasksDispatch): TasksReducer {
   switch (action.type) {
     case TASKS_GET_ALL_REQUESTED:
-      return { ...state, taskGetAllXferStatus: apiXferRequested() };
-    case TASKS_GET_ALL_SUCCEEDED: {
-      return {
-        ...state,
-        taskGetAllXferStatus: apiXferSucceeded(),
-        taskMap: action.payload,
-      };
+    case TASKS_GET_ALL_SUCCEEDED:
+    case TASKS_GET_ALL_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'TASKS_GET_ALL',
+        actionXferStatus: 'taskGetAllXferStatus',
+        succeededState: { 
+          ...state, 
+          taskMap: action.payload,
+        },
+      });
     }
-    case TASKS_GET_ALL_FAILED:
-      return { ...state, taskGetAllXferStatus: apiXferFailed(action.error) };
 
     case TASK_ADD_REQUESTED:
-      return { ...state, taskAddXferStatus: apiXferRequested() };
-    case TASK_ADD_SUCCEEDED: {
-      return {
-        ...state,
-        taskAddXferStatus: apiXferSucceeded(),
-        taskMap: {
-          ...action.payload,
-          ...state.taskMap,
+    case TASK_ADD_SUCCEEDED:
+    case TASK_ADD_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'TASK_ADD',
+        actionXferStatus: 'taskAddXferStatus',
+        succeededState: {
+          ...state,
+          taskMap: {
+            ...action.payload,
+            ...state.taskMap,
+          },
         },
-      };
+      });
     }
-    case TASK_ADD_FAILED:
-      return { ...state, taskAddXferStatus: apiXferFailed(action.error) };
 
     case TASK_UPDATE_REQUESTED:
-      return { ...state, taskUpdateXferStatus: apiXferRequested() };
-    case TASK_UPDATE_SUCCEEDED: {
-      return {
-        ...state,
-        taskUpdateXferStatus: apiXferSucceeded(),
-        taskMap: {
-          ...state.taskMap,
-          ...action.payload,
+    case TASK_UPDATE_SUCCEEDED:
+    case TASK_UPDATE_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'TASK_UPDATE',
+        actionXferStatus: 'taskUpdateXferStatus',
+        succeededState: {
+          ...state,
+          taskMap: {
+            ...action.payload,
+            ...state.taskMap,
+          },
         },
-      };
+      });
     }
-    case TASK_UPDATE_FAILED:
-      return { ...state, taskUpdateXferStatus: apiXferFailed(action.error) };
 
     case TASK_REMOVE_REQUESTED:
-      return { ...state, taskRemoveXferStatus: apiXferRequested() };
-    case TASK_REMOVE_SUCCEEDED: {
-      const taskMap = { ...state.taskMap || {} } ;
+    case TASK_REMOVE_SUCCEEDED:
+    case TASK_REMOVE_FAILED: {
+      const taskMap = { ...(state.taskMap || {}) };
       delete taskMap[action.payload];
-      return {
-        ...state,
-        taskRemoveXferStatus: apiXferSucceeded(),
-        taskMap,
-      };
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'TASK_REMOVE',
+        actionXferStatus: 'taskRemoveXferStatus',
+        succeededState: {
+          ...state,
+          taskMap,
+        },
+      });
     }
-    case TASK_REMOVE_FAILED:
-      return { ...state, taskRemoveXferStatus: apiXferFailed(action.error) };
 
     // default
     default:

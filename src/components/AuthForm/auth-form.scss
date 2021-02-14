@@ -113,4 +113,17 @@
       }
     }
   }
+
+  &__switch-link {
+    display: flex;
+    color: $color-blue;
+    margin-top: 20px;
+    justify-content: center;
+    font-size: 0.83em;
+  }
+
+  p {
+    font-size: 0.83em;
+    text-align: center;
+  }
 }

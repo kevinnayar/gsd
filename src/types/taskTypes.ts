@@ -30,25 +30,20 @@ export type TaskMap = {
   [id: string]: ITaskItem,
 };
 
-export type TaskGetAllDispatch = BaseDispatch & {
-  type: typeof TASKS_GET_ALL_REQUESTED | typeof TASKS_GET_ALL_SUCCEEDED | typeof TASKS_GET_ALL_FAILED;
+export type TasksDispatch = BaseDispatch & {
+  type:
+    | typeof TASKS_GET_ALL_REQUESTED
+    | typeof TASKS_GET_ALL_SUCCEEDED
+    | typeof TASKS_GET_ALL_FAILED
+    | typeof TASK_ADD_REQUESTED
+    | typeof TASK_ADD_SUCCEEDED 
+    | typeof TASK_ADD_FAILED
+    | typeof TASK_UPDATE_REQUESTED 
+    | typeof TASK_UPDATE_SUCCEEDED 
+    | typeof TASK_UPDATE_FAILED
+    | typeof TASK_REMOVE_REQUESTED 
+    | typeof TASK_REMOVE_SUCCEEDED 
+    | typeof TASK_REMOVE_FAILED
 };
-
-export type TaskAddDispatch = BaseDispatch & {
-  type: typeof TASK_ADD_REQUESTED | typeof TASK_ADD_SUCCEEDED | typeof TASK_ADD_FAILED;
-};
-
-export type TaskUpdateDispatch = BaseDispatch & {
-  type: typeof TASK_UPDATE_REQUESTED | typeof TASK_UPDATE_SUCCEEDED | typeof TASK_UPDATE_FAILED;
-};
-export type TaskRemoveDispatch = BaseDispatch & {
-  type: typeof TASK_REMOVE_REQUESTED | typeof TASK_REMOVE_SUCCEEDED | typeof TASK_REMOVE_FAILED;
-};
-
-export type TasksDispatch =
-  | TaskGetAllDispatch
-  | TaskAddDispatch
-  | TaskUpdateDispatch
-  | TaskRemoveDispatch;
 
 

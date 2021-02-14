@@ -3,19 +3,16 @@ import { createTaskDoc } from '../../utils/baseUtils';
 import {
   ITaskItem,
   TaskMap,
-  TaskGetAllDispatch,
+  TasksDispatch,
   TASKS_GET_ALL_REQUESTED,
   TASKS_GET_ALL_SUCCEEDED,
   TASKS_GET_ALL_FAILED,
-  TaskAddDispatch,
   TASK_ADD_REQUESTED,
   TASK_ADD_SUCCEEDED,
   TASK_ADD_FAILED,
-  TaskUpdateDispatch,
   TASK_UPDATE_REQUESTED,
   TASK_UPDATE_SUCCEEDED,
   TASK_UPDATE_FAILED,
-  TaskRemoveDispatch,
   TASK_REMOVE_REQUESTED,
   TASK_REMOVE_SUCCEEDED,
   TASK_REMOVE_FAILED,
@@ -79,7 +76,7 @@ async function asyncTaskRemove(taskId: string): Promise<string> {
 }
 
 export function tasksGetAll(userId: string) {
-  return async (dispatch: (action: TaskGetAllDispatch) => void) => {
+  return async (dispatch: (action: TasksDispatch) => void) => {
     dispatch({
       type: TASKS_GET_ALL_REQUESTED,
     });
@@ -100,7 +97,7 @@ export function tasksGetAll(userId: string) {
 }
 
 export function taskAdd(task: ITaskItem) {
-  return async (dispatch: (action: TaskAddDispatch) => void) => {
+  return async (dispatch: (action: TasksDispatch) => void) => {
     dispatch({
       type: TASK_ADD_REQUESTED,
     });
@@ -121,7 +118,7 @@ export function taskAdd(task: ITaskItem) {
 }
 
 export function taskUpdate(task: ITaskItem) {
-  return async (dispatch: (action: TaskUpdateDispatch) => void) => {
+  return async (dispatch: (action: TasksDispatch) => void) => {
     dispatch({
       type: TASK_UPDATE_REQUESTED,
     });
@@ -142,7 +139,7 @@ export function taskUpdate(task: ITaskItem) {
 }
 
 export function taskRemove(taskId: string) {
-  return async (dispatch: (action: TaskRemoveDispatch) => void) => {
+  return async (dispatch: (action: TasksDispatch) => void) => {
     dispatch({
       type: TASK_REMOVE_REQUESTED,
     });

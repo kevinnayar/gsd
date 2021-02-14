@@ -1,4 +1,4 @@
-import { apiXferInit, apiXferRequested, apiXferSucceeded, apiXferFailed } from '../../utils/baseUtils';
+import { apiXferInit, reducerMiddlewareHelper } from '../../utils/baseUtils';
 import {
   TASKDOC_GET_REQUESTED,
   TASKDOC_GET_SUCCEEDED,
@@ -27,63 +27,67 @@ export const initialState: TaskDocsReducer = {
 export default function reducer(state: TaskDocsReducer = initialState, action: TaskDocDispatch): TaskDocsReducer {
   switch (action.type) {
     case TASKDOC_GET_REQUESTED:
-      return { ...state, taskDocGetXferStatus: apiXferRequested() };
-    case TASKDOC_GET_SUCCEEDED: {
-      return {
-        ...state,
-        taskDocGetXferStatus: apiXferSucceeded(),
-        blobs: {
-          ...state.blobs,
-          ...action.payload,
+    case TASKDOC_GET_SUCCEEDED:
+    case TASKDOC_GET_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'TASKDOC_GET',
+        actionXferStatus: 'taskDocGetXferStatus',
+        succeededState: {
+          ...state,
+          blobs: {
+            ...state.blobs,
+            ...action.payload,
+          },
         },
-      };
+      });
     }
-    case TASKDOC_GET_FAILED:
-      return { ...state, taskDocGetXferStatus: apiXferFailed(action.error) };
 
     case TASKDOC_ADD_REQUESTED:
-      return { ...state, taskDocAddXferStatus: apiXferRequested() };
-    case TASKDOC_ADD_SUCCEEDED: {
-      return {
-        ...state,
-        taskDocAddXferStatus: apiXferSucceeded(),
-        blobs: {
-          ...state.blobs,
-          ...action.payload,
+    case TASKDOC_ADD_SUCCEEDED:
+    case TASKDOC_ADD_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'TASKDOC_ADD',
+        actionXferStatus: 'taskDocAddXferStatus',
+        succeededState: {
+          ...state,
+          blobs: {
+            ...state.blobs,
+            ...action.payload,
+          },
         },
-      };
+      });
     }
-    case TASKDOC_ADD_FAILED:
-      return { ...state, taskDocAddXferStatus: apiXferFailed(action.error) };
 
     case TASKDOC_UPDATE_REQUESTED:
-      return { ...state, taskDocUpdateXferStatus: apiXferRequested() };
-    case TASKDOC_UPDATE_SUCCEEDED: {
-      return {
-        ...state,
-        taskDocUpdateXferStatus: apiXferSucceeded(),
-        blobs: {
-          ...state.blobs,
-          ...action.payload,
+    case TASKDOC_UPDATE_SUCCEEDED:
+    case TASKDOC_UPDATE_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'TASKDOC_UPDATE',
+        actionXferStatus: 'taskDocUpdateXferStatus',
+        succeededState: {
+          ...state,
+          blobs: {
+            ...state.blobs,
+            ...action.payload,
+          },
         },
-      };
+      });
     }
-    case TASKDOC_UPDATE_FAILED:
-      return { ...state, taskDocUpdateXferStatus: apiXferFailed(action.error) };
 
     case TASKDOC_REMOVE_REQUESTED:
-      return { ...state, taskDocRemoveXferStatus: apiXferRequested() };
-    case TASKDOC_REMOVE_SUCCEEDED: {
+    case TASKDOC_REMOVE_SUCCEEDED:
+    case TASKDOC_REMOVE_FAILED: {
       const blobs = { ...(state.blobs || {}) };
       delete blobs[action.payload];
-      return {
-        ...state,
-        taskDocRemoveXferStatus: apiXferSucceeded(),
-        blobs,
-      };
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'TASKDOC_REMOVE',
+        actionXferStatus: 'taskDocRemoveXferStatus',
+        succeededState: {
+          ...state,
+          blobs,
+        },
+      });
     }
-    case TASKDOC_REMOVE_FAILED:
-      return { ...state, taskDocRemoveXferStatus: apiXferFailed(action.error) };
 
     // default
     default:

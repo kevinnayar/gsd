@@ -19,6 +19,14 @@ export const AUTH_SIGNUP_FAILED = 'AUTH_SIGNUP_FAILED';
 
 export const AUTH_SET_REDIRECT = 'AUTH_SET_REDIRECT';
 
+export const AUTH_RESET_PASSWORD_SEND_REQUESTED = 'AUTH_RESET_PASSWORD_SEND_REQUESTED';
+export const AUTH_RESET_PASSWORD_SEND_SUCCEEDED = 'AUTH_RESET_PASSWORD_SEND_SUCCEEDED';
+export const AUTH_RESET_PASSWORD_SEND_FAILED = 'AUTH_RESET_PASSWORD_SEND_FAILED';
+
+export const AUTH_RESET_PASSWORD_CONFIRM_REQUESTED = 'AUTH_RESET_PASSWORD_CONFIRM_REQUESTED';
+export const AUTH_RESET_PASSWORD_CONFIRM_SUCCEEDED = 'AUTH_RESET_PASSWORD_CONFIRM_SUCCEEDED';
+export const AUTH_RESET_PASSWORD_CONFIRM_FAILED = 'AUTH_RESET_PASSWORD_CONFIRM_FAILED';
+
 export type InternalUserCredentials = {
   email: string;
   password: string;
@@ -38,40 +46,26 @@ export type UserDef = UserDefPartial & {
   // acceptedTerms: boolean;
 };
 
-export type AuthCheckDispatch = BaseDispatch & {
+export type AuthDispatch = BaseDispatch & {
   type:
     | typeof AUTH_CHECK_REQUESTED
     | typeof AUTH_CHECK_SUCCEEDED
-    | typeof AUTH_CHECK_FAILED;
-};
-
-export type AuthLoginDispatch = BaseDispatch & {
-  type: 
+    | typeof AUTH_CHECK_FAILED
     | typeof AUTH_LOGIN_REQUESTED
     | typeof AUTH_LOGIN_SUCCEEDED
-    | typeof AUTH_LOGIN_FAILED;
-};
-export type AuthLogoutDispatch = BaseDispatch & {
-  type:
+    | typeof AUTH_LOGIN_FAILED
     | typeof AUTH_LOGOUT_REQUESTED
     | typeof AUTH_LOGOUT_SUCCEEDED
-    | typeof AUTH_LOGOUT_FAILED;
-};
-export type AuthSignupDispatch = BaseDispatch & {
-  type:
+    | typeof AUTH_LOGOUT_FAILED
     | typeof AUTH_SIGNUP_REQUESTED
     | typeof AUTH_SIGNUP_SUCCEEDED
-    | typeof AUTH_SIGNUP_FAILED;
+    | typeof AUTH_SIGNUP_FAILED
+    | typeof AUTH_SET_REDIRECT
+    | typeof AUTH_RESET_PASSWORD_SEND_REQUESTED
+    | typeof AUTH_RESET_PASSWORD_SEND_SUCCEEDED
+    | typeof AUTH_RESET_PASSWORD_SEND_FAILED
+    | typeof AUTH_RESET_PASSWORD_CONFIRM_REQUESTED
+    | typeof AUTH_RESET_PASSWORD_CONFIRM_SUCCEEDED
+    | typeof AUTH_RESET_PASSWORD_CONFIRM_FAILED
 };
-
-export type AuthRedirectDispatch = BaseDispatch & {
-  type: typeof AUTH_SET_REDIRECT
-};
-
-export type AuthDispatch =
-  | AuthCheckDispatch
-  | AuthLoginDispatch
-  | AuthLogoutDispatch
-  | AuthSignupDispatch
-  | AuthRedirectDispatch;
 

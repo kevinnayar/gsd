@@ -3,11 +3,7 @@ import {
   UserDef,
   UserDefPartial,
   InternalUserCredentials,
-  AuthLoginDispatch,
-  AuthLogoutDispatch,
-  AuthSignupDispatch,
-  AuthCheckDispatch,
-  AuthRedirectDispatch,
+  AuthDispatch,
   AUTH_CHECK_REQUESTED,
   AUTH_CHECK_SUCCEEDED,
   AUTH_CHECK_FAILED,
@@ -21,6 +17,12 @@ import {
   AUTH_SIGNUP_SUCCEEDED,
   AUTH_SIGNUP_FAILED,
   AUTH_SET_REDIRECT,
+  AUTH_RESET_PASSWORD_SEND_REQUESTED,
+  AUTH_RESET_PASSWORD_SEND_SUCCEEDED,
+  AUTH_RESET_PASSWORD_SEND_FAILED,
+  AUTH_RESET_PASSWORD_CONFIRM_REQUESTED,
+  AUTH_RESET_PASSWORD_CONFIRM_SUCCEEDED,
+  AUTH_RESET_PASSWORD_CONFIRM_FAILED,
 } from '../../types/authTypes';
 
 async function asyncUserCreateDef(user: firebase.User, userDefPartial: UserDefPartial): Promise<UserDef> {
@@ -77,15 +79,25 @@ async function asyncUserCheck(): Promise<void | firebase.User> {
   });
 }
 
+async function asyncSendPasswordResetEmail(email: string) {
+  await auth.sendPasswordResetEmail(email);
+  return email;
+}
+
+async function asyncConfirmPasswordReset(code: string, newPassword: string) {
+  await auth.confirmPasswordReset(code, newPassword);
+  return true;
+}
+
 export function authSignup(userCredentials: InternalUserCredentials, userDefPartial: UserDefPartial) {
-  return async (dispatch: (action: AuthSignupDispatch) => void) => {
+  return async (dispatch: (action: AuthDispatch) => void) => {
     dispatch({
       type: AUTH_SIGNUP_REQUESTED,
     });
 
     try {
       const user = await asyncUserSignup(userCredentials);
-      const payload = await asyncUserCreateDef(user, userDefPartial); 
+      const payload = await asyncUserCreateDef(user, userDefPartial);
       dispatch({
         type: AUTH_SIGNUP_SUCCEEDED,
         payload,
@@ -100,14 +112,14 @@ export function authSignup(userCredentials: InternalUserCredentials, userDefPart
 }
 
 export function authLogin(userCredentials: InternalUserCredentials) {
-  return async (dispatch: (action: AuthLoginDispatch) => void) => {
+  return async (dispatch: (action: AuthDispatch) => void) => {
     dispatch({
       type: AUTH_LOGIN_REQUESTED,
     });
 
     try {
       const user = await asyncUserLogin(userCredentials);
-      const payload = await asyncUserGetDef(user.uid);
+      const payload = (await asyncUserGetDef(user.uid)) || null;
       dispatch({
         type: AUTH_LOGIN_SUCCEEDED,
         payload,
@@ -122,7 +134,7 @@ export function authLogin(userCredentials: InternalUserCredentials) {
 }
 
 export function authLogout() {
-  return async (dispatch: (action: AuthLogoutDispatch) => void) => {
+  return async (dispatch: (action: AuthDispatch) => void) => {
     dispatch({
       type: AUTH_LOGOUT_REQUESTED,
     });
@@ -143,14 +155,14 @@ export function authLogout() {
 }
 
 export function authCheck() {
-  return async (dispatch: (action: AuthCheckDispatch) => void) => {
+  return async (dispatch: (action: AuthDispatch) => void) => {
     dispatch({
       type: AUTH_CHECK_REQUESTED,
     });
 
     try {
       const user = await asyncUserCheck();
-      const payload = user ? await asyncUserGetDef(user.uid) : undefined;
+      const payload = user ? (await asyncUserGetDef(user.uid)) || null : null;
       dispatch({
         type: AUTH_CHECK_SUCCEEDED,
         payload,
@@ -165,11 +177,53 @@ export function authCheck() {
 }
 
 export function authSetRedirect(pathname: string) {
-  return (dispatch: (action: AuthRedirectDispatch) => void) => {
+  return (dispatch: (action: AuthDispatch) => void) => {
     dispatch({
       type: AUTH_SET_REDIRECT,
       payload: pathname,
     });
+  };
+}
+
+export function authSendPasswordResetEmail(email: string) {
+  return async (dispatch: (action: AuthDispatch) => void) => {
+    dispatch({
+      type: AUTH_RESET_PASSWORD_SEND_REQUESTED,
+    });
+
+    try {
+      const payload = await asyncSendPasswordResetEmail(email);
+      dispatch({
+        type: AUTH_RESET_PASSWORD_SEND_SUCCEEDED,
+        payload,
+      });
+    } catch (error) {
+      dispatch({
+        type: AUTH_RESET_PASSWORD_SEND_FAILED,
+        error,
+      });
+    }
+  };
+}
+
+export function authConfirmPasswordReset(code: string, newPassword: string) {
+  return async (dispatch: (action: AuthDispatch) => void) => {
+    dispatch({
+      type: AUTH_RESET_PASSWORD_CONFIRM_REQUESTED,
+    });
+
+    try {
+      const payload = await asyncConfirmPasswordReset(code, newPassword);
+      dispatch({
+        type: AUTH_RESET_PASSWORD_CONFIRM_SUCCEEDED,
+        payload,
+      });
+    } catch (error) {
+      dispatch({
+        type: AUTH_RESET_PASSWORD_CONFIRM_FAILED,
+        error,
+      });
+    }
   };
 }
 

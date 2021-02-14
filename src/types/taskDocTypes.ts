@@ -30,19 +30,19 @@ export type TaskDocMap = {
   [id: string]: TaskDoc,
 };
 
-export type TaskDocGetDispatch = BaseDispatch & {
-  type: typeof TASKDOC_GET_REQUESTED | typeof TASKDOC_GET_SUCCEEDED | typeof TASKDOC_GET_FAILED;
+export type TaskDocDispatch = BaseDispatch & {
+  type: 
+    | typeof TASKDOC_GET_REQUESTED
+    | typeof TASKDOC_GET_SUCCEEDED
+    | typeof TASKDOC_GET_FAILED
+    | typeof TASKDOC_ADD_REQUESTED
+    | typeof TASKDOC_ADD_SUCCEEDED
+    | typeof TASKDOC_ADD_FAILED
+    | typeof TASKDOC_UPDATE_REQUESTED
+    | typeof TASKDOC_UPDATE_SUCCEEDED
+    | typeof TASKDOC_UPDATE_FAILED
+    | typeof TASKDOC_REMOVE_REQUESTED
+    | typeof TASKDOC_REMOVE_SUCCEEDED
+    | typeof TASKDOC_REMOVE_FAILED;
 };
 
-export type TaskDocAddDispatch = BaseDispatch & {
-  type: typeof TASKDOC_ADD_REQUESTED | typeof TASKDOC_ADD_SUCCEEDED | typeof TASKDOC_ADD_FAILED;
-};
-
-export type TaskDocUpdateDispatch = BaseDispatch & {
-  type: typeof TASKDOC_UPDATE_REQUESTED | typeof TASKDOC_UPDATE_SUCCEEDED | typeof TASKDOC_UPDATE_FAILED;
-};
-export type TaskDocRemoveDispatch = BaseDispatch & {
-  type: typeof TASKDOC_REMOVE_REQUESTED | typeof TASKDOC_REMOVE_SUCCEEDED | typeof TASKDOC_REMOVE_FAILED;
-};
-
-export type TaskDocDispatch = TaskDocGetDispatch | TaskDocAddDispatch | TaskDocUpdateDispatch | TaskDocRemoveDispatch;

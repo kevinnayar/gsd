@@ -41,7 +41,6 @@ const TasksContentComponent = (props: TasksContentProps) => {
   return <Loader />;
 };
 
-
 const TasksPage = () => {
   const dispatch = useDispatch();
   const params = useParams();

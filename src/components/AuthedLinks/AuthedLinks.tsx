@@ -15,14 +15,24 @@ export const AuthedLinks = React.memo(() => {
 
   return (
     <div className="authed-links">
-      <Link className="authed-links__link" to="" onClick={(e) => {
-        e.preventDefault();
-        const task = { ...createTask(userDef.userId), name: 'New Task' };
-        dispatch(taskAdd(task));
-      }}>
+      <Link
+        className="authed-links__link"
+        to="" 
+        onClick={(e) => {
+          e.preventDefault();
+          const task = { ...createTask(userDef.userId), name: 'New Task' };
+          dispatch(taskAdd(task));
+        }}
+      >
         <Icon iconName="add" className="add-task" />
       </Link>
-      <Link className="authed-links__link" to="" onClick={() => dispatch(authLogout())}>
+      <Link
+        className="authed-links__link"
+        to=""
+        onClick={() => {
+          dispatch(authLogout());
+        }}
+      >
         <Icon iconName="lock" className="user-logout" />
       </Link>
       <Link className="authed-links__link" to="/me">

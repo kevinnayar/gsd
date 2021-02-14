@@ -1,9 +1,6 @@
-import firebase from '../../../config/firebase';
 import {
   apiXferInit,
-  apiXferRequested,
-  apiXferSucceeded,
-  apiXferFailed,
+  reducerMiddlewareHelper,
 } from '../../utils/baseUtils';
 import {
   AUTH_CHECK_REQUESTED,
@@ -20,6 +17,12 @@ import {
   AUTH_SIGNUP_FAILED,
   AuthDispatch,
   AUTH_SET_REDIRECT,
+  AUTH_RESET_PASSWORD_SEND_REQUESTED,
+  AUTH_RESET_PASSWORD_SEND_SUCCEEDED,
+  AUTH_RESET_PASSWORD_SEND_FAILED,
+  AUTH_RESET_PASSWORD_CONFIRM_REQUESTED,
+  AUTH_RESET_PASSWORD_CONFIRM_SUCCEEDED,
+  AUTH_RESET_PASSWORD_CONFIRM_FAILED,
 } from '../../types/authTypes';
 import { AuthReducer } from '../../types/baseTypes';
 
@@ -28,6 +31,8 @@ export const initialState: AuthReducer = {
   authLoginXferStatus: apiXferInit(),
   authLogoutXferStatus: apiXferInit(),
   authSignupXferStatus: apiXferInit(),
+  authPasswordResetSendXferStatus: apiXferInit(),
+  authPasswordResetConfirmXferStatus: apiXferInit(),
   userDef: null,
   redirectPathname: '/tasks',
 };
@@ -35,54 +40,79 @@ export const initialState: AuthReducer = {
 export default function reducer(state: AuthReducer = initialState, action: AuthDispatch): AuthReducer {
   switch (action.type) {
     case AUTH_CHECK_REQUESTED:
-      return { ...state, authCheckXferStatus: apiXferRequested() };
-    case AUTH_CHECK_SUCCEEDED: {
-      return {
-        ...state,
-        authCheckXferStatus: apiXferSucceeded(),
-        userDef: action.payload,
-      };
+    case AUTH_CHECK_SUCCEEDED:
+    case AUTH_CHECK_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'AUTH_CHECK',
+        actionXferStatus: 'authCheckXferStatus',
+        succeededState: {
+          ...state,
+          userDef: action.payload,
+        },
+      });
     }
-    case AUTH_CHECK_FAILED:
-      return { ...state, authCheckXferStatus: apiXferFailed(action.error) };
 
     case AUTH_LOGIN_REQUESTED:
-      return { ...state, authLoginXferStatus: apiXferRequested() };
-    case AUTH_LOGIN_SUCCEEDED: {
-      return {
-        ...state,
-        authLoginXferStatus: apiXferSucceeded(),
-        userDef: action.payload,
-      };
+    case AUTH_LOGIN_SUCCEEDED:
+    case AUTH_LOGIN_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'AUTH_LOGIN',
+        actionXferStatus: 'authLoginXferStatus',
+        succeededState: {
+          ...state,
+          userDef: action.payload,
+        },
+      });
     }
-    case AUTH_LOGIN_FAILED:
-      return { ...state, authLoginXferStatus: apiXferFailed(action.error) };
 
     case AUTH_LOGOUT_REQUESTED:
-      return { ...state, authLogoutXferStatus: apiXferRequested() };
-    case AUTH_LOGOUT_SUCCEEDED: {
-      return {
-        ...state,
-        authLogoutXferStatus: apiXferSucceeded(),
-        userDef: action.payload,
-      };
+    case AUTH_LOGOUT_SUCCEEDED:
+    case AUTH_LOGOUT_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'AUTH_LOGOUT',
+        actionXferStatus: 'authLogoutXferStatus',
+        succeededState: {
+          ...state,
+          userDef: action.payload,
+        },
+      });
     }
-    case AUTH_LOGOUT_FAILED:
-      return { ...state, authLogoutXferStatus: apiXferFailed(action.error) };
 
     case AUTH_SIGNUP_REQUESTED:
-      return { ...state, authSignupXferStatus: apiXferRequested() };
-    case AUTH_SIGNUP_SUCCEEDED: {
-      return {
-        ...state,
-        authSignupXferStatus: apiXferSucceeded(),
-        userDef: action.payload,
-      };
+    case AUTH_SIGNUP_SUCCEEDED:
+    case AUTH_SIGNUP_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'AUTH_SIGNUP',
+        actionXferStatus: 'authSignupXferStatus',
+        succeededState: {
+          ...state,
+          userDef: action.payload,
+        },
+      });
     }
-    case AUTH_SIGNUP_FAILED:
-      return { ...state, authSignupXferStatus: apiXferFailed(action.error) };
 
-    case AUTH_SET_REDIRECT: return { ...state, redirectPathname: action.payload };
+    case AUTH_SET_REDIRECT:
+      return { ...state, redirectPathname: action.payload };
+
+    case AUTH_RESET_PASSWORD_SEND_REQUESTED:
+    case AUTH_RESET_PASSWORD_SEND_SUCCEEDED:
+    case AUTH_RESET_PASSWORD_SEND_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'AUTH_RESET_PASSWORD_SEND',
+        actionXferStatus: 'authPasswordResetSendXferStatus',
+        succeededState: { ...state },
+      });
+    }
+
+    case AUTH_RESET_PASSWORD_CONFIRM_REQUESTED:
+    case AUTH_RESET_PASSWORD_CONFIRM_SUCCEEDED:
+    case AUTH_RESET_PASSWORD_CONFIRM_FAILED: {
+      return reducerMiddlewareHelper(state, action, {
+        actionTypePrefix: 'AUTH_RESET_PASSWORD_CONFIRM',
+        actionXferStatus: 'authPasswordResetConfirmXferStatus',
+        succeededState: { ...state },
+      });
+    }
 
     // default
     default:

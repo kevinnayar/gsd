@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import firebase from '../../config/firebase';
-import { IThemeMode, ApiXferStatus } from '../types/baseTypes';
+import { IThemeMode, ApiXferStatus, BaseDispatch } from '../types/baseTypes';
 import { ITaskItem } from '../types/taskTypes';
 import { TaskDoc } from '../types/taskDocTypes';
 
@@ -154,6 +154,33 @@ export function updateTaskDoc(taskDocIn: TaskDoc, blob: string): TaskDoc {
 }
 
 
+type ActionMiddlewareConfig<T> = {
+  actionTypePrefix: string;
+  actionXferStatus: string;
+  succeededState: T;
+};
+
+export function reducerMiddlewareHelper<T>(
+  state: T,
+  action: BaseDispatch & { type: string },
+  config: ActionMiddlewareConfig<T>,
+): T {
+  if (action.type.startsWith(config.actionTypePrefix)) {
+    if (action.type.includes('REQUESTED')) {
+      return { ...state, [config.actionXferStatus]: apiXferRequested() };
+    }
+
+    if (action.type.includes('SUCCEEDED')) {
+      return { ...config.succeededState, [config.actionXferStatus]: apiXferSucceeded() };
+    }
+
+    if (action.type.includes('FAILED')) {
+      return { ...state, [config.actionXferStatus]: apiXferFailed(action.error) };
+    }
+  }
+
+  return state;
+}
 
 
 

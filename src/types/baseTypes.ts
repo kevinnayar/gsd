@@ -22,6 +22,8 @@ export type AuthReducer = {
   authLoginXferStatus: ApiXferStatus;
   authLogoutXferStatus: ApiXferStatus;
   authSignupXferStatus: ApiXferStatus;
+  authPasswordResetSendXferStatus: ApiXferStatus;
+  authPasswordResetConfirmXferStatus: ApiXferStatus;
   userDef: null | UserDef;
   redirectPathname: string;
 };

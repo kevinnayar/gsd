@@ -2,19 +2,16 @@ import firebase, { auth, db } from '../../../config/firebase';
 import {
   TaskDoc,
   TaskDocMap,
-  TaskDocGetDispatch,
+  TaskDocDispatch,
   TASKDOC_GET_REQUESTED,
   TASKDOC_GET_SUCCEEDED,
   TASKDOC_GET_FAILED,
-  TaskDocAddDispatch,
   TASKDOC_ADD_REQUESTED,
   TASKDOC_ADD_SUCCEEDED,
   TASKDOC_ADD_FAILED,
-  TaskDocUpdateDispatch,
   TASKDOC_UPDATE_REQUESTED,
   TASKDOC_UPDATE_SUCCEEDED,
   TASKDOC_UPDATE_FAILED,
-  TaskDocRemoveDispatch,
   TASKDOC_REMOVE_REQUESTED,
   TASKDOC_REMOVE_SUCCEEDED,
   TASKDOC_REMOVE_FAILED,
@@ -50,7 +47,7 @@ async function asyncTaskDocRemove(taskId: string): Promise<string> {
 }
 
 export function taskDocGet(taskId: string) {
-  return async (dispatch: (action: TaskDocGetDispatch) => void) => {
+  return async (dispatch: (action: TaskDocDispatch) => void) => {
     dispatch({
       type: TASKDOC_GET_REQUESTED,
     });
@@ -71,7 +68,7 @@ export function taskDocGet(taskId: string) {
 }
 
 export function taskDocAdd(taskDoc: TaskDoc) {
-  return async (dispatch: (action: TaskDocAddDispatch) => void) => {
+  return async (dispatch: (action: TaskDocDispatch) => void) => {
     dispatch({
       type: TASKDOC_ADD_REQUESTED,
     });
@@ -92,7 +89,7 @@ export function taskDocAdd(taskDoc: TaskDoc) {
 }
 
 export function taskDocUpdate(taskId: string, blob: string) {
-  return async (dispatch: (action: TaskDocUpdateDispatch) => void) => {
+  return async (dispatch: (action: TaskDocDispatch) => void) => {
     dispatch({
       type: TASKDOC_UPDATE_REQUESTED,
     });
@@ -113,7 +110,7 @@ export function taskDocUpdate(taskId: string, blob: string) {
 }
 
 export function taskRemove(taskId: string) {
-  return async (dispatch: (action: TaskDocRemoveDispatch) => void) => {
+  return async (dispatch: (action: TaskDocDispatch) => void) => {
     dispatch({
       type: TASKDOC_REMOVE_REQUESTED,
     });

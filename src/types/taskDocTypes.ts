@@ -1,5 +1,6 @@
 import firebase from '../../config/firebase';
 import { BaseDispatch } from './baseTypes';
+import { RawDraftContentState } from 'draft-js';
 
 export const TASKDOC_GET_REQUESTED = 'TASKDOC_GET_REQUESTED';
 export const TASKDOC_GET_SUCCEEDED = 'TASKDOC_GET_SUCCEEDED';
@@ -20,7 +21,7 @@ export const TASKDOC_REMOVE_FAILED = 'TASKDOC_REMOVE_FAILED';
 export type TaskDoc = {
   taskId: string;
   userId: string;
-  blob: string;
+  blob: RawDraftContentState;
   type: 'taskDoc';
   createdDate: firebase.firestore.Timestamp;
   updatedDate: firebase.firestore.Timestamp;

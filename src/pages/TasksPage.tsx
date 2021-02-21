@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 
 import PrivatePage from './PrivatePage';
-import { Loader } from '../components/Loader/Loader';
-import { TaskList } from '../components/TaskList/TaskList';
-import { TaskNameEditor } from '../components/TaskNameEditor/TaskNameEditor';
-import { TaskDocEditor } from '../components/TaskDocEditor/TaskDocEditor';
-import { NoneTaskEditor } from '../components/NoneTaskEditor/NoneTaskEditor';
+import Loader from '../components/Loader/Loader';
+import TaskList from '../components/TaskList/TaskList';
+import TaskNameEditor from '../components/TaskNameEditor/TaskNameEditor';
+import TaskDocEditor from '../components/TaskDocEditor/TaskDocEditor';
+import NoneTaskEditor from '../components/NoneTaskEditor/NoneTaskEditor';
 
 import { tasksGetAll } from '../store/tasks/tasksActions';
 import { taskDocGet } from '../store/taskDocs/taskDocsActions';
@@ -29,11 +29,37 @@ const TasksContentComponent = (props: TasksContentProps) => {
 
   if (taskMap && Object.keys(taskMap).length && !task) return <NoneTaskEditor hasTasks={true} />;
 
+  const [sticky, setSticky] = useState(false);
+
+  const ref = useRef(null);
+
+  const handleScroll = () => {
+    if (ref.current) {
+      setSticky(ref.current.getBoundingClientRect().top <= 0);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', () => handleScroll);
+    };
+  }, []);
+
   if (task && taskDoc) {
     return (
-      <div className="task-editor">
-        <TaskNameEditor task={task} />
-        <TaskDocEditor taskId={taskDoc.taskId} blob={taskDoc.blob} key={taskDoc.taskId} />
+      <div ref={ref} className="task-editor">
+        <TaskNameEditor
+          task={task}
+          sticky={sticky}
+        />
+        <TaskDocEditor
+          key={taskDoc.taskId}
+          sticky={sticky}
+          taskId={taskDoc.taskId}
+          blob={taskDoc.blob}
+        />
       </div>
     );
   }

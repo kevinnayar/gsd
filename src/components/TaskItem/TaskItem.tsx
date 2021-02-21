@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Icon } from '../Icon/Icon';
-import { Modal } from '../Modal/Modal';
+import Icon from '../Icon/Icon';
+import Modal from '../Modal/Modal';
 import { taskUpdate, taskRemove, tasksGetAll } from '../../store/tasks/tasksActions';
 import { ITaskItem } from '../../types/taskTypes';
 import { AppReducer } from '../../types/baseTypes';
@@ -14,7 +14,7 @@ type TaskItemProps = {
   active: boolean,
 };
 
-export const TaskItem = React.memo((props: TaskItemProps) => {
+const TaskItem = (props: TaskItemProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { userDef } = useSelector((state: AppReducer) => state.auth);
@@ -68,7 +68,10 @@ export const TaskItem = React.memo((props: TaskItemProps) => {
       />
     </div>
   );
-});
+};
+
+export default TaskItem;
+
 
 
 

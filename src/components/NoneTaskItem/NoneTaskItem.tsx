@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Icon } from '../Icon/Icon';
+import Icon from '../Icon/Icon';
 import { AppReducer } from '../../types/baseTypes';
 import { createTask } from '../../utils/baseUtils';
 import { taskAdd } from '../../store/tasks/tasksActions';
 
-export const NoneTaskItem = React.memo(() => {
+const NoneTaskItem = () => {
   const { userDef } = useSelector((state: AppReducer) => state.auth);
   if (!userDef) return null;
 
@@ -24,7 +24,9 @@ export const NoneTaskItem = React.memo(() => {
       </Link>
     </div>
   );
-});
+};
+
+export default React.memo(NoneTaskItem);
 
 
 

@@ -7,6 +7,9 @@
   font-size: 3.2em;
   outline-offset: 0;
   font-family: $font-body;
+  width: 100%;
+  padding-bottom: 10px;
+  border-bottom: 1px solid $color-border;
 
   &:focus {
     background: transparent;
@@ -17,5 +20,12 @@
   &--completed {
     text-decoration: line-through;
     text-decoration-color: $color-blue;
+  }
+
+  &--sticky {
+    position: fixed;
+    top: 0;
+    background: $color-bg;
+    width: 40%;
   }
 }

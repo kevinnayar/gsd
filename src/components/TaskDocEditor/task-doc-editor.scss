@@ -4,10 +4,112 @@
   }
 }
 
-.ck.ck-editor__editable_inline,
-.ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
-  outline: none;
-  border: none;
-  box-shadow: none;
+.custom-editor {
+  display: flex;
+  flex-wrap: wrap;
+
+  &__controls {
+    display: flex;
+    background: $color-bg;
+    width: 100%;
+  }
+
+  .style-controls {
+    padding-top: 4px;
+    display: flex;
+    margin-left: -14px;
+
+    &--inline {
+      margin-right: 0.3em;
+    }
+  }
+
+  .RichEditor {
+    &-styleButton {
+      width: 48px;
+      height: 48px;
+      line-height: 48px;
+      text-align: center;
+      margin-right: 0.3em;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    &-activeButton {
+      color: $color-blue;
+
+      .icon {
+        color: $color-blue;
+      }
+    }
+  }
+
+  .DraftEditor-root {
+    flex-basis: 100%;
+    margin-top: 48px;
+    line-height: 1.6;
+    font-size: calc(13px * 1.6);
+
+    h1 {
+      font-size: calc(24px * 1.6);
+    }
+
+    h2 {
+      font-size: calc(20px * 1.6);
+    }
+
+    h3 {
+      font-size: calc(18px * 1.6);
+    }
+
+    p, ul li, ol li {
+      font-size: calc(13px * 1.6);
+    }
+
+    ul, ol {
+      margin-left: 10px;
+    }
+
+    blockquote {
+      border-left: 6px solid $color-border;
+    }
+
+    pre.public-DraftStyleDefault-pre {
+      background: $color-border;
+      border-radius: 4px;
+      padding: 1.2em;
+      font-size: 90%;
+    }
+
+    pre {
+      margin: 0;
+    }
+
+    .public-DraftEditorPlaceholder-inner {
+      opacity: 0.3;
+    }
+  }
+
+  &--sticky {
+    .custom-editor__controls {
+      position: fixed;
+      top: 73px;
+      width: 40%;
+      background: $color-bg;
+      
+      &--block {
+        margin-left: 144px;
+      }   
+    }
+    
+    .DraftEditor-root {
+      margin-top: 164px;
+    }
+  }
 }
+
+
+
+
+
 

@@ -1,5 +1,6 @@
 import * as uuid from 'uuid';
 import firebase from '../../config/firebase';
+import { RawDraftContentState } from 'draft-js';
 import { IThemeMode, ApiXferStatus, BaseDispatch } from '../types/baseTypes';
 import { ITaskItem } from '../types/taskTypes';
 import { TaskDoc } from '../types/taskDocTypes';
@@ -135,7 +136,7 @@ export function createTaskDoc(task: ITaskItem): TaskDoc {
   const taskDoc: TaskDoc = {
     taskId,
     userId,
-    blob: '',
+    blob: { blocks: [], entityMap: {} },
     type: 'taskDoc',
     createdDate,
     updatedDate: createdDate,
@@ -143,7 +144,7 @@ export function createTaskDoc(task: ITaskItem): TaskDoc {
   return taskDoc;
 }
 
-export function updateTaskDoc(taskDocIn: TaskDoc, blob: string): TaskDoc {
+export function updateTaskDoc(taskDocIn: TaskDoc, blob: RawDraftContentState): TaskDoc {
   const updatedDate = firebase.firestore.Timestamp.fromDate(new Date());
   const taskDoc: TaskDoc = {
     ...taskDocIn,

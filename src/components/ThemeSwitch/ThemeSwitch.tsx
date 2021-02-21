@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { initLocalTheme, setLocalTheme } from '../../utils/baseUtils';
 import { IThemeMode } from '../../types/baseTypes';
 
-export const ThemeSwitch = React.memo(() => {
+const ThemeSwitch = () => {
   const [theme, setTheme] = useState<IThemeMode>(initLocalTheme(window.localStorage));
 
   const handleOnChange = () => {
@@ -21,6 +21,9 @@ export const ThemeSwitch = React.memo(() => {
       </label>
     </div>
   );
-});
+};
+
+export default React.memo(ThemeSwitch);
+
 
 

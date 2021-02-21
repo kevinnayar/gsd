@@ -5,7 +5,25 @@
   display: flex;
 
   &__link {
-    margin-left: 0.5em;
+    margin-left: 1em;
+
+    .icon {
+      margin-bottom: 0.33em;
+    }
+
+    p {
+      margin: 0;
+      color: $color-text;
+      font-size: 0.83em;
+      text-align: center;
+      transition: $hover-transition;
+    }
+
+    &:hover {
+      p {
+        opacity: 0.5;
+      }
+    }
   }
 }
 

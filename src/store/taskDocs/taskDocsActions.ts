@@ -1,4 +1,5 @@
-import firebase, { auth, db } from '../../../config/firebase';
+import { db } from '../../../config/firebase';
+import { RawDraftContentState } from 'draft-js';
 import {
   TaskDoc,
   TaskDocMap,
@@ -16,6 +17,7 @@ import {
   TASKDOC_REMOVE_SUCCEEDED,
   TASKDOC_REMOVE_FAILED,
 } from '../../types/taskDocTypes';
+
 
 async function asyncTaskDocGet(taskId: string) {
   const taskDocRef = db.collection('taskDocs').doc(taskId).get();
@@ -36,7 +38,7 @@ async function asyncTaskDocAdd(taskDoc: TaskDoc): Promise<{ [id: string]: TaskDo
   return { [taskDoc.taskId]: taskDoc };
 }
 
-async function asyncTaskDocUpdate(taskId: string, blob: string): Promise<{ [id: string]: TaskDoc }> {
+async function asyncTaskDocUpdate(taskId: string, blob: RawDraftContentState): Promise<{ [id: string]: TaskDoc }> {
   await db.collection('taskDocs').doc(taskId).update({ blob });
   return asyncTaskDocGet(taskId);
 }
@@ -88,7 +90,7 @@ export function taskDocAdd(taskDoc: TaskDoc) {
   };
 }
 
-export function taskDocUpdate(taskId: string, blob: string) {
+export function taskDocUpdate(taskId: string, blob: RawDraftContentState) {
   return async (dispatch: (action: TaskDocDispatch) => void) => {
     dispatch({
       type: TASKDOC_UPDATE_REQUESTED,

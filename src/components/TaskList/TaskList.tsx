@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { TaskItem } from '../TaskItem/TaskItem';
-import { NoneTaskItem } from '../NoneTaskItem/NoneTaskItem';
+import TaskItem from '../TaskItem/TaskItem';
+import NoneTaskItem from '../NoneTaskItem/NoneTaskItem';
 import { TaskMap } from '../../types/taskTypes';
 
-export const TaskList = React.memo((props: { taskMap: TaskMap, taskId: void | string }) => {
+const TaskList = (props: { taskMap: TaskMap, taskId: void | string }) => {
   const taskIds = Object.keys(props.taskMap);
 
   return (
-    <div className="task-list">
-      {!taskIds.length ? <NoneTaskItem /> : null}
+    <div className={`task-list task-list--${taskIds.length ? 'with-items' : 'no-items'}`}>
+      <NoneTaskItem />
       {taskIds.map((id) => {
         const task = props.taskMap[id];
         const active = id === props.taskId;
@@ -16,7 +16,10 @@ export const TaskList = React.memo((props: { taskMap: TaskMap, taskId: void | st
       })}
     </div>
   );
-});
+};
+
+export default TaskList;
+
 
 
 

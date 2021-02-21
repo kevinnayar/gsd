@@ -57,6 +57,12 @@ p, ul li {
   font-size: 1.3em;
 }
 
+blockquote {
+  margin-left: 0;
+  padding-left: 48px;
+  line-height: 1.6;
+}
+
 body.mode--light {
   $color-bg: rgb(255, 255, 255);
   $color-text: lighten(rgb(30, 30, 30), 30%);

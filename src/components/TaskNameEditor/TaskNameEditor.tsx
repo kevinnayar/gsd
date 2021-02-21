@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { taskUpdate } from '../../store/tasks/tasksActions';
 import { ITaskItem } from '../../types/taskTypes';
 
-export const TaskNameEditor = (props: { task: ITaskItem }) => {
+function TaskNameEditor(props: { task: ITaskItem, sticky: boolean }) {
   const dispatch = useDispatch();
   const [taskName, setTaskName] = useState(props.task.name);
 
@@ -29,13 +29,15 @@ export const TaskNameEditor = (props: { task: ITaskItem }) => {
 
   return (
     <input
-      className={`task-name-editor task-name-editor--${completedSuffix}`}
+      className={`task-name-editor task-name-editor--${completedSuffix} ${props.sticky ? 'task-name-editor--sticky' : ''}`}
       value={taskName}
       onChange={onChangeTaskName}
       onBlur={onBlurTaskName}
     />
   );
 };
+
+export default React.memo(TaskNameEditor);
 
 
 

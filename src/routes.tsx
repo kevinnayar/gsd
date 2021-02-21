@@ -6,13 +6,14 @@ import { Redirect, useLocation } from 'react-router-dom';
 import { authCheck, authSetRedirect } from './store/auth/authActions';
 import { AppReducer } from './types/baseTypes';
 
-const PUBLIC_ROUTES = ['', '/', '/login', '/signup', '/auth'];
+const PUBLIC_ROUTES = ['/login', '/signup', '/auth'];
 
 export const PublicRoute = ({ component: Component, ...rest }) => {  
   const { userDef, redirectPathname } = useSelector((state: AppReducer) => state.auth);
 
   if (userDef) {
-    const pathname = PUBLIC_ROUTES.includes(redirectPathname) ? '/tasks' : redirectPathname;
+    let pathname = PUBLIC_ROUTES.includes(redirectPathname) ? '/tasks' : redirectPathname;
+    if (['', '/'].includes(pathname)) pathname = '/login';
     return <Redirect to={pathname} />;
   }
 

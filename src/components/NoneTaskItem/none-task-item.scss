@@ -1,7 +1,5 @@
 .none--task-item {
   display: flex;
-  flex-direction: column;
-  align-items: center;
 
   &__link {
     display: flex;
@@ -30,6 +28,31 @@
     p {
       color: $color-white;
       margin: 0;
+    }
+  }
+}
+
+// .task-list--no-items {
+//   .none--task-item {
+//   }
+// }
+
+.task-list--with-items {
+  .none--task-item {
+    &__link {
+      flex-direction: row;
+      margin: 0;
+      padding: 16px 0;
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.165);
+      justify-content: center;
+
+      .icon {
+        margin-bottom: 0;
+        margin-right: 10px;
+        width: 32px;
+        height: 32px;
+      }
     }
   }
 }

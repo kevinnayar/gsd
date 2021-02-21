@@ -5,10 +5,7 @@ import { Provider } from 'react-redux';
 
 import store from './store';
 
-import {
-  PublicRoute,
-  PrivateRoute,
-} from './routes';
+import { PublicRoute, PrivateRoute } from './routes';
 import AuthLoginPage from './pages/AuthLoginPage';
 import AuthSignupPage from './pages/AuthSignupPage';
 import AuthUpdatePasswordPage from './pages/AuthUpdatePasswordPage';
@@ -21,6 +18,7 @@ function App() {
   return (
     <Provider store={store}>
       <Router history={history}>
+        <Redirect from="/" to="/login" />
         <Switch>
           <PublicRoute exact path="/login" component={AuthLoginPage} />
           <PublicRoute exact path="/signup" component={AuthSignupPage} />

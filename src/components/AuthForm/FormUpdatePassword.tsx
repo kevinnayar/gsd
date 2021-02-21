@@ -1,34 +1,18 @@
 import * as React from 'react';
-import { auth } from '../../../config/firebase';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { authConfirmPasswordReset } from '../../store/auth/authActions';
-import { extractError, validateEmail, validatePassword } from '../../utils/baseUtils';
-import { UserDefPartial } from '../../types/authTypes';
+import { extractError, validatePassword } from '../../utils/baseUtils';
 import { AppReducer } from '../../types/baseTypes';
 
 function useQuery() {
-  const query: any = new URLSearchParams(useLocation().search);
-
-  function getFromList(keys: string[]) {
-    const values = [];
-    for (let key of keys) {
-      const value = query.get(key);
-      values.push(value);
-    }
-    return values;
-  }
-
-  query.getFromList = getFromList;
-
-  return query;
+  return new URLSearchParams(useLocation().search);
 }
 
 export function FormUpdatePassword() {
-  const history = useHistory();
   const query = useQuery();
-  const [mode, oobCode] = query.getFromList(['mode', 'oobCode']);
+  const oobCode = query.get('oobCode');
   
   const dispatch = useDispatch();
   const { authPasswordResetConfirmXferStatus } = useSelector((state: AppReducer) => state.auth);
@@ -68,9 +52,6 @@ export function FormUpdatePassword() {
     if (authPasswordResetConfirmXferStatus.failed) {
       setError(extractError(authPasswordResetConfirmXferStatus.error));
     }
-    if (authPasswordResetConfirmXferStatus.succeeded) {
-      history.push('/login');
-    }
   }, [authPasswordResetConfirmXferStatus]);
   
 
@@ -78,6 +59,22 @@ export function FormUpdatePassword() {
     const valid = password && validatePassword(password);
     setCanSubmit(valid);
   }, [password]);
+
+  if (authPasswordResetConfirmXferStatus.succeeded) {
+    return (
+      <div className="form--login">
+        <div>
+          <p>Your password has been reset!</p>
+          <Link
+            className="auth-form__switch-link"
+            to="/login"
+            >
+            Back to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="form--signup">

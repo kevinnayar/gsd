@@ -4,8 +4,8 @@
   "description": "gsd",
   "scripts": {
     "test": "jest --watch",
-    "start": "parcel ./src/index.html --no-source-maps",
-    "build": "tsc"
+    "start": "parcel ./src/index.html",
+    "build": "parcel build src/index.html"
   },
   "jest": {
     "preset": "ts-jest",
@@ -22,15 +22,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
-    "@ckeditor/ckeditor5-build-balloon": "^25.0.0",
-    "@ckeditor/ckeditor5-build-classic": "^25.0.0",
-    "@ckeditor/ckeditor5-markdown-gfm": "^25.0.0",
-    "@ckeditor/ckeditor5-react": "^3.0.0",
     "@svgr/parcel-plugin-svgr": "^5.1.0",
     "@types/jest": "^26.0.9",
     "@types/react": "^16.9.45",
     "@types/react-dom": "^16.9.8",
     "dotenv": "^8.2.0",
+    "draft-js": "^0.11.7",
     "firebase": "^8.2.3",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
@@ -59,6 +56,7 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-typescript": "^7.8.3",
+    "@types/draft-js": "^0.10.44",
     "@types/lodash.debounce": "^4.0.6",
     "@types/lodash.throttle": "^4.1.6",
     "@types/react-redux": "^7.1.16",

@@ -7,7 +7,7 @@ type ModalProps = {
   onCancel: () => void;
 };
 
-export const Modal = React.memo((props: ModalProps) => {
+const Modal = (props: ModalProps) => {
   return (
     <div className={`modal modal--${props.visible ? 'visible' : 'hidden'}`}>
       <div className="modal__content">
@@ -29,5 +29,7 @@ export const Modal = React.memo((props: ModalProps) => {
       </div>
     </div>
   );
-});
+};
+
+export default React.memo(Modal);
 

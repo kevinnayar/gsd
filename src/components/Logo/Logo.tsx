@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-export const Logo = React.memo(() => <h1 className="logo">get.shit.done</h1>);
+const Logo = () => <h1 className="logo">get.shit.done.</h1>
+
+export default React.memo(Logo);
 
 
 

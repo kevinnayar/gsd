@@ -11,14 +11,6 @@ type Attribution = {
 
 const imageList: Array<[string, Attribution]> = [
   [
-    'luis-del-rio-15286',
-    {
-      userName: 'Luis del Río',
-      webUrl: 'https://www.pexels.com/photo/person-walking-between-green-forest-trees-15286/',
-      userUrl: 'https://www.pexels.com/@luisdelrio',
-    },
-  ],
-  [
     'sam-kolder-2387873',
     {
       userName: 'Sam Kolder',
@@ -52,14 +44,7 @@ const imageList: Array<[string, Attribution]> = [
       userUrl: 'https://www.pexels.com/@eberhardgross',
     },
   ],
-  [
-    'brady-knoll-5409751', 
-    {
-      userName: 'Brady Knoll',
-      webUrl: 'https://www.pexels.com/photo/white-and-brown-mountain-under-gray-clouds-5409751/',
-      userUrl: 'https://www.pexels.com/@trvlust',
-    },
-  ],
+
   [
     'jaymantri-4827', 
     {
@@ -68,16 +53,7 @@ const imageList: Array<[string, Attribution]> = [
       userUrl: 'https://www.pexels.com/@jaymantri',
     },
   ],
-  [
-    'pixabay-33109', 
-    {
-      userName: 'Pixabay',
-      webUrl: 'https://www.pexels.com/@pixabay',
-      userUrl: 'https://www.pexels.com/photo/red-leaf-trees-near-the-road-33109/',
-    },
-  ],
 ];
-
 
 const ImageText = React.memo((props: { id: string }) => {
   const match = imageList.find(item => props.id.startsWith(item[0]));
@@ -95,13 +71,15 @@ const images = Object.keys(allImages).map(key => allImages[key]);
 const index = getRandomInt(images.length, true);
 const image = images[index];
 
-export const ImageRandomizer = React.memo(() => {
+const ImageRandomizer =() => {
   return (
     <div className="image-randomizer" style={{ backgroundImage: `url(${image})` }}>
       <ImageText id={image.replace('/', '')} />
     </div>
   );
-});
+};
+
+export default React.memo(ImageRandomizer);
 
 
 

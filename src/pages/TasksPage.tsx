@@ -31,12 +31,14 @@ type TasksContentProps = {
 function TasksContent(props: TasksContentProps) {
   const { taskMap, task, taskDoc } = props;
 
-  if (taskMap && !Object.keys(taskMap).length) return <NoneTaskEditor hasTasks={false} />;
-
-  if (taskMap && Object.keys(taskMap).length && !task) return <NoneTaskEditor hasTasks={true} />;
+  if (
+    (taskMap && !Object.keys(taskMap).length) ||
+    (taskMap && Object.keys(taskMap).length && !task)
+  ) {
+    return <NoneTaskEditor />;
+  }
 
   const [sticky, setSticky] = useState(false);
-
   const ref = useRef(null);
 
   const handleScroll = () => {

@@ -136,8 +136,6 @@ type CustomEditorProps = {
   onChange: (editorState: EditorState) => void;
 };
 
-
-
 function CustomEditor(props: CustomEditorProps) {
   const editor = React.useRef(null);
   

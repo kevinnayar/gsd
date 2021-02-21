@@ -7,7 +7,7 @@ const hidden = 'sidebar--hidden';
 
 document.body.classList.add(visible);
 
-const SidebarToggle = () => {
+function SidebarToggle() {
   const [vis, setVis] = useState(visible);
 
   const handleOnClick = () => {
@@ -23,7 +23,7 @@ const SidebarToggle = () => {
       <Icon iconName={iconName} className="sidebar-toggle" onClick={handleOnClick} />
     </div>
   );
-};
+}
 
 export default React.memo(SidebarToggle);
 

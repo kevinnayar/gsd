@@ -1,13 +1,13 @@
 import * as React from 'react'
 
 import PublicPage from './PublicPage';
-import { AuthForm } from '../components/AuthForm/AuthForm';
-import { FormLogin } from '../components/AuthForm/FormLogin';
+import AuthForm from '../components/AuthForm/AuthForm';
+import FormLogin from '../components/AuthForm/FormLogin';
 
 const AuthLoginPage = React.memo(() => {
   return (
     <PublicPage>
-      <AuthForm>
+      <AuthForm showNav>
         <FormLogin />
       </AuthForm>
     </PublicPage>

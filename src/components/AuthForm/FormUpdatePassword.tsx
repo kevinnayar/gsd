@@ -10,7 +10,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-export function FormUpdatePassword() {
+function FormUpdatePassword() {
   const query = useQuery();
   const oobCode = query.get('oobCode');
   
@@ -92,4 +92,7 @@ export function FormUpdatePassword() {
     </div>
   );
 }
+
+export default React.memo(FormUpdatePassword);
+
 

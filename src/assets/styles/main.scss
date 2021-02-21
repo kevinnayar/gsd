@@ -87,7 +87,7 @@ body.mode--light {
   @import '../../components/TaskItem/task-item.scss';
   @import '../../components/TaskNameEditor/task-name-editor.scss';
   @import '../../components/TaskDocEditor/task-doc-editor.scss';
-  @import '../../components/NoneTaskItem/none-task-item.scss';
+  @import '../../components/CreateTaskItem/create-task-item.scss';
   @import '../../components/NoneTaskEditor/non-task-editor.scss';
   @import '../../components/Modal/modal.scss';
 }
@@ -116,7 +116,7 @@ body.mode--dark {
   @import '../../components/TaskItem/task-item.scss';
   @import '../../components/TaskNameEditor/task-name-editor.scss';
   @import '../../components/TaskDocEditor/task-doc-editor.scss';
-  @import '../../components/NoneTaskItem/none-task-item.scss';
+  @import '../../components/CreateTaskItem/create-task-item.scss';
   @import '../../components/NoneTaskEditor/non-task-editor.scss';
   @import '../../components/Modal/modal.scss';
 }

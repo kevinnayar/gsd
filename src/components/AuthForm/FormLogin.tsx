@@ -171,7 +171,7 @@ function Login(props: ViewProps) {
   );
 }
 
-export function FormLogin() {
+function FormLogin() {
   const [email, setEmail] = useState('');
   const [view, setView] = useState('LOGIN');
 
@@ -183,5 +183,9 @@ export function FormLogin() {
 
   return view === 'LOGIN' ? <Login {...props} /> : <ForgotPassword {...props} />;
 }
+
+export default React.memo(FormLogin);
+
+
 
 

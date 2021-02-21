@@ -24,6 +24,9 @@
     font-size: 1em;
     background: transparent;
     color: $color-white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &--complete {

@@ -89,7 +89,6 @@ export default function reducer(state: TaskDocsReducer = initialState, action: T
       });
     }
 
-    // default
     default:
       return state;
   }

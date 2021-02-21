@@ -71,13 +71,13 @@ const images = Object.keys(allImages).map(key => allImages[key]);
 const index = getRandomInt(images.length, true);
 const image = images[index];
 
-const ImageRandomizer =() => {
+function ImageRandomizer() {
   return (
     <div className="image-randomizer" style={{ backgroundImage: `url(${image})` }}>
       <ImageText id={image.replace('/', '')} />
     </div>
   );
-};
+}
 
 export default React.memo(ImageRandomizer);
 

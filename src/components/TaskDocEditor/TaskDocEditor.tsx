@@ -136,20 +136,32 @@ type CustomEditorProps = {
   onChange: (editorState: EditorState) => void;
 };
 
+
+
 function CustomEditor(props: CustomEditorProps) {
   const editor = React.useRef(null);
   
   const initialEditorState = props.existingContent
     ? EditorState.createWithContent(props.existingContent)
     : EditorState.createEmpty();
-
   const [editorState, setEditorState] = useState<EditorState>(initialEditorState);
-  const [placeholderText, setPlaceholderText] = useState(getRandomPlaceholderText());
+
+  const PLACEHOLDER = getRandomPlaceholderText();
+  const [placeholderText, setPlaceholderText] = useState(PLACEHOLDER);
 
   const focusEditor = () => {
     if (editor) {
       setPlaceholderText('');
       editor.current.focus();
+    }
+  };
+
+  const onBlur = () => {
+    if (editor) {
+      const contentState: ContentState = editorState.getCurrentContent();
+      if (!contentState.hasText()) {
+        setPlaceholderText(PLACEHOLDER);
+      }
     }
   };
 
@@ -194,6 +206,7 @@ function CustomEditor(props: CustomEditorProps) {
         editorState={editorState}
         handleKeyCommand={handleKeyCommand}
         onChange={onChange}
+        onBlur={onBlur}
         placeholder={placeholderText}
         spellCheck
       />
@@ -233,7 +246,7 @@ function TaskDocEditor(props: TaskDocEditorProps) {
       onChange={onChange}
     />
   );
-};
+}
 
 export default React.memo(TaskDocEditor);
 

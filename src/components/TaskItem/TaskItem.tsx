@@ -14,7 +14,7 @@ type TaskItemProps = {
   active: boolean,
 };
 
-const TaskItem = (props: TaskItemProps) => {
+function TaskItem(props: TaskItemProps) {
   const dispatch = useDispatch();
   const history = useHistory();
   const { userDef } = useSelector((state: AppReducer) => state.auth);
@@ -68,9 +68,9 @@ const TaskItem = (props: TaskItemProps) => {
       />
     </div>
   );
-};
+}
 
-export default TaskItem;
+export default React.memo(TaskItem);
 
 
 

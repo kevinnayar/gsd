@@ -3,9 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 
-import PrivatePage from './PrivatePage';
+import Sidebar from '../components/Sidebar/Sidebar';
+import Content from '../components/Content/Content';
+import Logo from '../components/Logo/Logo';
+import ThemeSwitch from '../components/ThemeSwitch/ThemeSwitch';
+import SidebarToggle from '../components/SidebarToggle/SidebarToggle';
+import AuthedLinks from '../components/AuthedLinks/AuthedLinks';
 import Loader from '../components/Loader/Loader';
 import TaskList from '../components/TaskList/TaskList';
+import CreateTaskItem from '../components/CreateTaskItem/CreateTaskItem';
 import TaskNameEditor from '../components/TaskNameEditor/TaskNameEditor';
 import TaskDocEditor from '../components/TaskDocEditor/TaskDocEditor';
 import NoneTaskEditor from '../components/NoneTaskEditor/NoneTaskEditor';
@@ -22,7 +28,7 @@ type TasksContentProps = {
   taskDoc: null | TaskDoc;
 };
 
-const TasksContentComponent = (props: TasksContentProps) => {
+function TasksContent(props: TasksContentProps) {
   const { taskMap, task, taskDoc } = props;
 
   if (taskMap && !Object.keys(taskMap).length) return <NoneTaskEditor hasTasks={false} />;
@@ -65,9 +71,9 @@ const TasksContentComponent = (props: TasksContentProps) => {
   }
 
   return <Loader />;
-};
+}
 
-const TasksPage = () => {
+function TasksPage() {
   const dispatch = useDispatch();
   const params = useParams();
 
@@ -100,12 +106,21 @@ const TasksPage = () => {
   }, [blobs]);
 
   return (
-    <PrivatePage
-      sidebarComponent={taskMap ? <TaskList taskMap={taskMap} taskId={taskId} /> : null}
-      contentComponent={<TasksContentComponent taskMap={taskMap} task={task} taskDoc={taskDoc} />}
-    />
+    <div className="app">
+      <Sidebar>
+        <Logo />
+        <ThemeSwitch />
+        <SidebarToggle />
+        <CreateTaskItem />
+        {taskMap ? <TaskList taskMap={taskMap} taskId={taskId} /> : null}
+      </Sidebar>
+      <Content>
+        <AuthedLinks />
+        {<TasksContent taskMap={taskMap} task={task} taskDoc={taskDoc} />}
+      </Content>
+    </div>
   );
-};
+}
 
 export default TasksPage;
 

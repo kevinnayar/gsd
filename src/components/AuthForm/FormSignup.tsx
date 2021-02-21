@@ -6,7 +6,7 @@ import { extractError, validateEmail, validatePassword } from '../../utils/baseU
 import { UserDefPartial } from '../../types/authTypes';
 import { AppReducer } from '../../types/baseTypes';
 
-export function FormSignup() {
+function FormSignup() {
   const dispatch = useDispatch();
   const { authSignupXferStatus } = useSelector((state: AppReducer) => state.auth);
 
@@ -104,4 +104,6 @@ export function FormSignup() {
     </div>
   );
 }
+
+export default React.memo(FormSignup);
 

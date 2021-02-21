@@ -35,7 +35,7 @@ function TaskNameEditor(props: { task: ITaskItem, sticky: boolean }) {
       onBlur={onBlurTaskName}
     />
   );
-};
+}
 
 export default React.memo(TaskNameEditor);
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Icon from '../Icon/Icon';
 
-const NoneTaskEditor = (props: { hasTasks: boolean }) => {  
+function NoneTaskEditor(props: { hasTasks: boolean }) {
   return (
     <div className="none--task-editor">
       <div className="none--task-editor__content">
@@ -19,7 +19,7 @@ const NoneTaskEditor = (props: { hasTasks: boolean }) => {
       )}
     </div>
   );
-};
+}
 
 export default React.memo(NoneTaskEditor);
 

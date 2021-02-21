@@ -5,7 +5,7 @@ import Logo from '../components/Logo/Logo';
 import ThemeSwitch from '../components/ThemeSwitch/ThemeSwitch';
 import ImageRandomizer from '../components/ImageRandomizer/ImageRandomizer';
 
-const PublicPage = React.memo((props: { children: any }) => {
+function PublicPage(props: { children: any }) {
   if (document.body.classList.contains('sidebar--hidden')) {
     document.body.classList.replace('sidebar--hidden', 'sidebar--visible');
   } else {
@@ -22,6 +22,6 @@ const PublicPage = React.memo((props: { children: any }) => {
       <ImageRandomizer />
     </div>
   );
-});
+}
 
 export default PublicPage;

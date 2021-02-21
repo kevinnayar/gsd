@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 
-export const AuthForm = React.memo((props: { children: any, hideNav?: boolean }) => {
+function AuthForm(props: { children: any, showNav?: boolean }) {
   return (
     <div className="auth-form">
-      {!props.hideNav && (
+      {props.showNav && (
         <div className="auth-form__nav-links">
           <NavLink to="/login">Login</NavLink>
           <NavLink to="/signup">Signup</NavLink>
@@ -13,4 +13,6 @@ export const AuthForm = React.memo((props: { children: any, hideNav?: boolean })
       {props.children}
     </div>
   );
-});
+}
+
+export default React.memo(AuthForm);

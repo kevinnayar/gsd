@@ -154,7 +154,6 @@ export function updateTaskDoc(taskDocIn: TaskDoc, blob: RawDraftContentState): T
   return taskDoc;
 }
 
-
 type ActionMiddlewareConfig<T> = {
   actionTypePrefix: string;
   actionXferStatus: string;
@@ -182,6 +181,3 @@ export function reducerMiddlewareHelper<T>(
 
   return state;
 }
-
-
-

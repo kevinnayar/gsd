@@ -44,7 +44,7 @@ function AuthedLinks() {
   );
 }
 
-export const MemoedAuthedLinks = React.memo(AuthedLinks);
+export default React.memo(AuthedLinks);
 
 
 

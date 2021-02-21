@@ -48,8 +48,8 @@ export default function reducer(state: TasksReducer = initialState, action: Task
         succeededState: {
           ...state,
           taskMap: {
-            ...action.payload,
             ...state.taskMap,
+            ...action.payload,
           },
         },
       });
@@ -64,8 +64,8 @@ export default function reducer(state: TasksReducer = initialState, action: Task
         succeededState: {
           ...state,
           taskMap: {
-            ...action.payload,
             ...state.taskMap,
+            ...action.payload,
           },
         },
       });
@@ -86,7 +86,6 @@ export default function reducer(state: TasksReducer = initialState, action: Task
       });
     }
 
-    // default
     default:
       return state;
   }

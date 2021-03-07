@@ -8,7 +8,6 @@ const index = getRandomInt(images.length, true);
 const image = images[index];
 
 function NoneTaskEditor() {
-  console.log(allImages);
   const imageKeys = Object.keys(allImages);
   return (
     <div className="none--task-editor">

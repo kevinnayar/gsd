@@ -2,6 +2,26 @@
   display: flex;
   align-items: center;
 
+  &__text {
+    font-size: .7em;
+    color: $color-white;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: $hover-transition;
+
+    &:hover {
+      opacity: 0.75;
+    }
+
+    &.begin {
+      margin-right: 8px;
+    }
+
+    &.end {
+      margin-left: 8px;
+    }
+  }
+
   &__label {
     display: inline-block;
     height: 18px;

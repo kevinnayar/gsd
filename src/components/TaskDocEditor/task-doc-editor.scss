@@ -111,6 +111,25 @@
   }
 }
 
+.custom-task-list-item {
+  display: flex;
+  align-items: center;
+
+  .icon {
+    margin-right: 8px;
+    width: 24px;
+    height: 24px;
+
+    &:hover {
+      background: transparent;
+      opacity: 0.75;
+    }
+  }
+
+  p {
+    margin: 0 0 0.5em;
+   }
+}
 
 
 

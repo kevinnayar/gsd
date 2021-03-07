@@ -9,6 +9,9 @@ import {
   RawDraftContentState,
   convertFromRaw,
   convertToRaw,
+  DefaultDraftBlockRenderMap,
+  AtomicBlockUtils,
+  ContentBlock,
 } from 'draft-js';
 import { useState, useEffect, useCallback } from 'react';
 import Icon from '../Icon/Icon';
@@ -33,6 +36,69 @@ function getRandomPlaceholderText() {
   return PLACEHOLDER_TEXTS[index];
 }
 
+// import Immutable from 'immutable';
+// const blockRenderMap = Immutable.Map({
+//   'CustomTaskList': {
+//     element: 'section',
+//     wrapper: <CustomTaskList />,
+//   },
+// });
+
+// const extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
+// { label: 'CustomTaskList', icon: 'check_box', style: 'CustomTaskList' },
+// blockRenderMap={extendedBlockRenderMap}
+
+// class CustomTaskList extends React.Component {
+//   constructor(props: any) {
+//     super(props);
+//   }
+
+//   render() {
+//     return (
+//       <div className='CustomTaskList'>
+//         <Icon iconName="check_box" className="custom-task-list-item" />
+//       </div>
+//     );
+//   }
+// }
+
+function CustomTaskListItem(props) {
+  // const entity = props.contentState.getEntity(props.block.getEntityAt(0));
+  console.log(props);
+        // const {src} = entity.getData();
+        // const type = entity.getType();
+        // console.log(entity);
+  return (
+    <div className='custom-task-list-item'>
+      <Icon
+        iconName={props.blockProps.completed ? 'check_box' : 'check_box_outline_blank'}
+        className="custom-task-list-item"
+        onClick={() => props.blockProps.setCompleted(!props.blockProps.completed)}
+      />
+      {/* <p>{props.text}</p> */}
+    </div>
+  );
+}
+
+function extendedBlockRenderer(contentBlock: ContentBlock) {
+  const type = contentBlock.getType();
+  if (type === 'atomic') {
+    
+    const props = {
+      completed: false,
+      setCompleted: (_c: boolean) => {},
+    };
+
+    props.setCompleted = (c: boolean) => props.completed = c;
+
+    return {
+      component: CustomTaskListItem,
+      editable: true,
+      props,
+    };
+  }
+}
+
 const BLOCK_STYLES = [
   { label: 'h1', style: 'header-one' },
   { label: 'h2', style: 'header-two' },
@@ -42,6 +108,7 @@ const BLOCK_STYLES = [
   { label: 'Ordered List', icon: 'format_list_bulleted', style: 'unordered-list-item' },
   { label: 'Numbered List', icon: 'format_list_numbered', style: 'ordered-list-item' },
   { label: 'Code', icon: 'code', style: 'code-block' },
+  // { label: 'Task Item', icon: 'check_box', style: 'atomic' },
 ];
 
 const INLINE_STYLES = [
@@ -201,6 +268,7 @@ function CustomEditor(props: CustomEditorProps) {
       </div>
       <Editor
         ref={editor}
+        blockRendererFn={extendedBlockRenderer}
         editorState={editorState}
         handleKeyCommand={handleKeyCommand}
         onChange={onChange}

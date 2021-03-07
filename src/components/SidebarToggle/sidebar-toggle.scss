@@ -1,20 +1,40 @@
-.sidebar-toggle {
-  .icon--sidebar-toggle {
-    position: fixed;
-    left: 32px;
-    top: 32px;
+.sidebar-toggle { 
+  display: flex;
+  position: fixed;
+  left: 32px;
+  top: 32px;
+  color: $color-text;
+  border: 1px solid $color-border;
+  padding: 4px 10px 4px 4px;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: $hover-transition;
+
+  &:hover {
+    background-color: $color-border;
+  }
+
+  .icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.8em;
   }
 }
 
 &.sidebar--visible {
   .sidebar-toggle {
-    .icon--sidebar-toggle {
-      color: $color-white;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.165);
-      }
-    }
+    margin-left: 28%;
   }
 }
 
@@ -22,14 +42,11 @@
   .app__sidebar {
     z-index: 1000;
   }
+  .sidebar-toggle {    
+    margin-left: 0;
 
-  .sidebar-toggle {
-    .icon--sidebar-toggle {
-      color: $color-text;
-
-      &:hover {
-        background-color: $color-border;
-      }
+    &:hover {
+      background-color: $color-border;
     }
   }
 }

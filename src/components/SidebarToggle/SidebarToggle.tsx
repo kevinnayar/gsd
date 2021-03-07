@@ -16,11 +16,12 @@ function SidebarToggle() {
     setVis(newVis);
   }
 
-  const iconName = vis === visible ? 'keyboard_arrow_left' : 'keyboard_arrow_right';
+  const iconName = vis === visible ? 'center_focus_strong' : 'list';
 
   return (
-    <div className="sidebar-toggle">
-      <Icon iconName={iconName} className="sidebar-toggle" onClick={handleOnClick} />
+    <div className="sidebar-toggle" onClick={handleOnClick}>
+      <Icon iconName={iconName} className="sidebar-toggle" />
+      <p>{vis === visible ? 'Focus Mode' : 'Show Sidebar'}</p>
     </div>
   );
 }

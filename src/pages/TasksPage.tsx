@@ -87,10 +87,16 @@ function TasksPage() {
   const taskId: void | string = params.taskId !== undefined ? params.taskId : undefined;
   const [task, setTask] = useState<null | ITaskItem>(null);
   const [taskDoc, setTaskDoc] = useState<null | TaskDoc>(null);
+
+  console.log(taskId);
   
   useEffect(() => {
     if (userDef) {
       dispatch(tasksGetAll(userDef.userId));
+    }
+    if (task && taskDoc && !taskId) {
+      setTask(null);
+      setTaskDoc(null);
     }
   }, [taskId]);
 
@@ -112,13 +118,13 @@ function TasksPage() {
       <Sidebar>
         <Logo />
         <ThemeSwitch />
-        <SidebarToggle />
         <CreateTaskItem />
-        {taskMap ? <TaskList taskMap={taskMap} taskId={taskId} /> : null}
+        {taskMap && <TaskList taskMap={taskMap} taskId={taskId} />}
       </Sidebar>
       <Content>
+        {taskMap && <SidebarToggle />}
         <AuthedLinks />
-        {<TasksContent taskMap={taskMap} task={task} taskDoc={taskDoc} />}
+        <TasksContent taskMap={taskMap} task={task} taskDoc={taskDoc} />
       </Content>
     </div>
   );
